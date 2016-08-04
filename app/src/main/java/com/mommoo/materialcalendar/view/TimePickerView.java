@@ -242,12 +242,12 @@ public class TimePickerView extends View {
                 if(notifyChanged != null) notifyChanged.notify(hour,minute,am_pm);
                 invalidate();
             }
-            if(viewMode == MINUTE_MODE && !movable){
+            if(viewMode == MINUTE_MODE && !movable && !isAnim){
                 if(isLeftArrow) {
                     isLeftArrowTouch=  true;
                     invalidate();
                 }
-            }else if(viewMode == HOUR_MODE && !movable){
+            }else if(viewMode == HOUR_MODE && !movable && !isAnim){
                 if(isRightArrow){
                     isRightArrowTouch = true;
                     invalidate();
@@ -258,13 +258,15 @@ public class TimePickerView extends View {
             if(movable){
                 moveLine(x,y);
             }else{
-                if(!isLeftArrow) {
-                    isLeftArrowTouch = false;
-                    invalidate();
-                }
-                if(!isRightArrow){
-                    isRightArrowTouch = false;
-                    invalidate();
+                if(!isAnim) {
+                    if (!isLeftArrow) {
+                        isLeftArrowTouch = false;
+                        invalidate();
+                    }
+                    if (!isRightArrow) {
+                        isRightArrowTouch = false;
+                        invalidate();
+                    }
                 }
             }
         }else if(event.getAction() == MotionEvent.ACTION_UP){
@@ -276,24 +278,28 @@ public class TimePickerView extends View {
                     startTransAnimation();
                 }
             }
-            if(isLeftArrowTouch){
-                if(isLeftArrow) {
-                    startTransAnimation();
-                    if(notifyChanged != null) notifyChanged.vibrate();
+            if(!isAnim){
+                if(isLeftArrowTouch){
+                    if(isLeftArrow) {
+                        isAnim = true;
+                        startTransAnimation();
+                        if(notifyChanged != null) notifyChanged.vibrate();
+                    }
+                    else {
+                        isLeftArrowTouch = false;
+                        invalidate();
+                    }
                 }
-                else {
-                    isLeftArrowTouch = false;
-                    invalidate();
-                }
-            }
-            if(isRightArrowTouch){
-                if(isRightArrow) {
-                    startTransAnimation();
-                    if(notifyChanged != null) notifyChanged.vibrate();
-                }
-                else {
-                    isRightArrowTouch = false;
-                    invalidate();
+                if(isRightArrowTouch){
+                    if(isRightArrow) {
+                        isAnim = true;
+                        startTransAnimation();
+                        if(notifyChanged != null) notifyChanged.vibrate();
+                    }
+                    else {
+                        isRightArrowTouch = false;
+                        invalidate();
+                    }
                 }
             }
         }
