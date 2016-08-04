@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MaterialCalendar</string>
+    <string name="dialog_ok_button">Accept</string>
+    <string name="dialog_cancel_button">Decline</string>
+</resources>

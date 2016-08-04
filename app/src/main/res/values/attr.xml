@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleImageView">
+        <attr name="circle_background" format="color" />
+        <attr name="circle_padding" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="ClipAnimLayout">
+        <attr name="start_pivot_x" format="float"/>
+        <attr name="start_pivot_y" format="float"/>
+        <attr name="start_radius" format="float"/>
+        <attr name="animation_duration" format="integer"/>
+        <attr name="animation_start_delay" format="integer"/>
+    </declare-styleable>
+</resources>
