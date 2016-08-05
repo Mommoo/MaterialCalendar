@@ -4,11 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.mommoo.materialcalendar.animation.ClipAnimation;
-import com.mommoo.materialcalendar.animation.CurveAnimation;
-import com.mommoo.materialcalendar.animation.PickerAnimation;
-import com.mommoo.materialcalendar.helper.Picker;
-import com.mommoo.materialcalendar.manager.DIPManager;
+import com.mommoo.materialpicker.DatePicker;
+import com.mommoo.materialpicker.TimePicker;
+import com.mommoo.materialpicker.animation.ClipAnimation;
+import com.mommoo.materialpicker.animation.CurveAnimation;
+import com.mommoo.materialpicker.animation.PickerAnimation;
+import com.mommoo.materialpicker.helper.Picker;
+import com.mommoo.materialpicker.manager.DIPManager;
 
 public class TestActivity extends AppCompatActivity {
 
