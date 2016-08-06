@@ -341,6 +341,7 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        dismiss();
         if(view.getId()==R.id.decline){
             if(callBackDeclineListener != null){
                 callBackDeclineListener.decline();
@@ -353,12 +354,11 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
                 callBackAcceptListener.callBack(true);
             }
         }
-        dismiss();
     }
 
     @Override
     public void dismiss() {
-        super.dismiss();
         isShowing = false;
+        super.dismiss();
     }
 }

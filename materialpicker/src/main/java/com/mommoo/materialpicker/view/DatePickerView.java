@@ -40,7 +40,7 @@ public class DatePickerView extends View{
     private TimeInterpolator overInter = new OvershootInterpolator();
     private DatePickerViewPagerAdapter.NotifyChangeData notifyChangeData;
     private NotifyClickedData notifyClickedData;
-
+    
     public interface NotifyClickedData{
         public void notify(int year, int month, int date);
     }

@@ -53,6 +53,8 @@ public class TestActivity extends AppCompatActivity {
                     @Override
                     public void onDate(boolean accept, int year, int month, int date) {
                         System.out.println("isAccept : "+accept+" , year : "+year +" , month : " +month+" , date : "+date);
+                        TimePicker timePicker =new TimePicker(TestActivity.this);
+                        timePicker.show();
                     }
                 });
 

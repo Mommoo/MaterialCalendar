@@ -33,7 +33,7 @@ public class PickerDimension {
 
     public void setContentWidth(Context context,int contentWidth){
         this.contentWidth = contentWidth;
-        // datePicker의 toolbar 와 캘린더뷰의 비율이 3:11 이다.
+        // radtio that toolbar of datePicker and CalendarView is 3:11
         setContentHeight((int)(((getElementAreaSize(context) *6) + (getPadding(context)*7))*14)/11);
     }
 

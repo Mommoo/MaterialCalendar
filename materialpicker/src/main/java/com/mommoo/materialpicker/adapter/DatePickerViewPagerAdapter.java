@@ -43,7 +43,6 @@ public class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPage
 
     @Override
     public int getItemPosition(Object object) {
-        System.out.println(object.toString());
         return POSITION_NONE;
     }
 

@@ -1,5 +1,15 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = 'mommoo'
+    groupId = 'com.mommoo.android'
+    artifactId = 'material-picker'
+    publishVersion = '0.1.1'
+    desc = 'Date and Time picker material UX/UI for Android'
+    website = 'https://github.com/Mommoo/MaterialCalendar'
+    issueTracker = "${website}/issues"
+    repository = "${website}.git"
+}
 android {
     compileSdkVersion 24
     buildToolsVersion "23.0.3"
