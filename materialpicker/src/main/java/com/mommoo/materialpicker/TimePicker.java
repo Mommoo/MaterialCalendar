@@ -162,7 +162,13 @@ public class TimePicker extends Picker {
         });
     }
 
-    public void inputDialogTitle(int am_pm,int hour, int minute){
+    @Override
+    public void setThemeColor(int color) {
+        super.setThemeColor(color);
+        if(pickerView != null) pickerView.setThemeColor(color);
+    }
+
+    public void inputDialogTitle(int am_pm, int hour, int minute){
         String time = hour+" : "+(minute<10?"0":"")+minute;
         setDialogStatusTitle(am_pmStrings[am_pm]);
         setDialogTitle(time);

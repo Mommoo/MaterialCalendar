@@ -84,6 +84,10 @@ public class TimePickerView extends View {
         arrow[1] = BitmapFactory.decodeResource(getResources(),R.mipmap.arrow2);
     }
 
+    public void setThemeColor(int color){
+        decoPaint.setThemeColor(color);
+    }
+
     public void changeViewMode(int viewMode){
         this.viewMode = viewMode;
         invalidate();
@@ -414,6 +418,15 @@ public class TimePickerView extends View {
 
             stringHeight = -Math.abs(textPaint.ascent())+Math.abs(textPaint.descent()) + Math.abs(textPaint.getFontMetrics().leading);
             pivotCircleColor = ContextCompat.getColor(context, R.color.colorAccent);
+            selectedCircleColor = pivotCircleColor;
+            float[] HSV = new float[3];
+            Color.colorToHSV(selectedCircleColor,HSV);
+            selectedCircleColor = Color.HSVToColor(100,HSV);
+            lineColor = pivotCircleColor;
+        }
+
+        private void setThemeColor(int color){
+            pivotCircleColor = color;
             selectedCircleColor = pivotCircleColor;
             float[] HSV = new float[3];
             Color.colorToHSV(selectedCircleColor,HSV);

@@ -91,6 +91,9 @@ public class DatePickerView extends View{
         return calendarInfo;
     }
 
+    public void setThemeColor(int color){
+        decoPaint.setThemeColor(color);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -266,9 +269,18 @@ public class DatePickerView extends View{
         public DecoPaint(Context context){
             setAntiAlias(true);
             int standardColor = ContextCompat.getColor(context, R.color.colorAccent);
-            circleColor = com.mommoo.materialpicker.toolkit.Color.lighter(standardColor);
+            float[] HSV = new float[3];
+            Color.colorToHSV(standardColor,HSV);
+            circleColor = Color.HSVToColor(100,HSV);
             todayColor = com.mommoo.materialpicker.toolkit.Color.darker(standardColor);
             inCircleTextColor = Color.WHITE;
+        }
+
+        private void setThemeColor(int color){
+            float[] HSV = new float[3];
+            Color.colorToHSV(color,HSV);
+            circleColor = Color.HSVToColor(100,HSV);
+            todayColor = com.mommoo.materialpicker.toolkit.Color.darker(color);
         }
 
         @Override

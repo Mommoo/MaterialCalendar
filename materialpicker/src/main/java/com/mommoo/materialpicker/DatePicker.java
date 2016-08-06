@@ -37,6 +37,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
     private String[] days = CalendarCalculator.getDays();
     private boolean isDate;
     private ViewPager viewPager;
+    private DatePickerViewPagerAdapter adapter;
 
     public interface OnDateSet {
         void onDate(boolean isAccept, int year, int month, int date);
@@ -74,7 +75,8 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
         yearTextView = (TextView) view.findViewById(R.id.yearText);
         monthTextView = (TextView) view.findViewById(R.id.monthText);
 
-        DatePickerViewPagerAdapter adapter = new DatePickerViewPagerAdapter(context);
+        adapter = new DatePickerViewPagerAdapter(context);
+        adapter.setThemeColor(getThemeColor());
 
         adapter.setNotifyDataChange(this);
         viewPager.setAdapter(adapter);
@@ -187,7 +189,13 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
         });
     }
 
-    private void inputDialogTitle(int year,int month, int date){
+    @Override
+    public void setThemeColor(int color) {
+        super.setThemeColor(color);
+        if(adapter!=null)adapter.setThemeColor(color);
+    }
+
+    private void inputDialogTitle(int year, int month, int date){
         Calendar cal = Calendar.getInstance();
         cal.set(year, month - 1, date);
         String yearString = Integer.toString(year);

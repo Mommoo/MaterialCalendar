@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.mommoo.materialpicker.view.DatePickerView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -22,9 +23,11 @@ public class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPage
     final static int LOOPS = 1000;
     final static int BASE_POSITION = PAGES * LOOPS / 2;
     final Calendar BASE_CAL;
+    private int themeColor;
     private NotifyChangeData notifyChangeData;
     private boolean once;
     private int year,month,date;
+    private ArrayList<DatePickerView> array = new ArrayList<>();
 
     public interface NotifyChangeData{
         void notifyChangeDate(int year, int month, int date, int position);
@@ -35,6 +38,11 @@ public class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPage
         Calendar base = Calendar.getInstance();
         base.set(BASE_YEAR, BASE_MONTH, 1);
         BASE_CAL = base;
+    }
+
+    public void setThemeColor(int themeColor){
+        this.themeColor = themeColor;
+        for(DatePickerView tempView : array) tempView.setThemeColor(themeColor);
     }
 
     public void setNotifyDataChange(NotifyChangeData notifyDataChange){
@@ -66,25 +74,28 @@ public class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPage
         int mYear2 = cal.get(Calendar.YEAR);
         int mMonth2 = cal.get(Calendar.MONTH) +1;
 
-        final DatePickerView cv = new DatePickerView(context, new DatePickerView.CalendarInfo(mYear2, mMonth2));
-        cv.setNotifyDataChange(this.notifyChangeData);
-        cv.setNotifyClickedData(this);
+        final DatePickerView dpv = new DatePickerView(context, new DatePickerView.CalendarInfo(mYear2, mMonth2));
+        dpv.setNotifyDataChange(this.notifyChangeData);
+        dpv.setThemeColor(themeColor);
+        dpv.setNotifyClickedData(this);
         if(!once){
             once = true;
-            cv.setClickedState(cal.get(Calendar.DATE));
+            dpv.setClickedState(Calendar.getInstance().get(Calendar.DATE));
         }else{
             if(mYear2 == year && mMonth2 == month){
-                cv.setClickedState(date);
+                dpv.setClickedState(date);
             }
         }
-        container.addView(cv);
-        return cv;
+        array.add(dpv);
+        container.addView(dpv);
+        return dpv;
     }
 
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         ((DatePickerView)object).destroy();
+        array.remove(object);
         container.removeView((View) object);
     }
 
