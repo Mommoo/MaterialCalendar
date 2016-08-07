@@ -23,9 +23,7 @@ public class TestActivity extends AppCompatActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePicker datePicker = new DatePicker(TestActivity.this);
-                //datePicker.setMaximumWidth();
-                //datePicker.setMinimumWidth();
+                DatePicker datePicker = new DatePicker(TestActivity.this,2016,0,21);
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 float fromX = location[0], fromY = location[1];
@@ -54,7 +52,7 @@ public class TestActivity extends AppCompatActivity {
                     @Override
                     public void onDate(boolean accept, int year, int month, int date) {
                         System.out.println("isAccept : "+accept+" , year : "+year +" , month : " +month+" , date : "+date);
-                        TimePicker timePicker =new TimePicker(TestActivity.this);
+                        TimePicker timePicker =new TimePicker(TestActivity.this,10,55,1);
                         timePicker.show();
                     }
                 });

@@ -80,6 +80,7 @@ public class TimePickerView extends View {
         decoPaint = new DecoPaint(context);
         hour = calendar.get(Calendar.HOUR);
         minute = calendar.get(Calendar.MINUTE);
+        am_pm = calendar.get(Calendar.AM_PM);
         arrow[0] = BitmapFactory.decodeResource(getResources(), R.mipmap.arrow);
         arrow[1] = BitmapFactory.decodeResource(getResources(),R.mipmap.arrow2);
     }

@@ -54,9 +54,10 @@ public class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPage
         return POSITION_NONE;
     }
 
-    public int getPosition(int year, int month) {
+    public int getPosition(int year, int month, int date) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, 1);
+        this.date = date;
         return BASE_POSITION + howFarFromBase(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
     }
 
@@ -80,7 +81,7 @@ public class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPage
         dpv.setNotifyClickedData(this);
         if(!once){
             once = true;
-            dpv.setClickedState(Calendar.getInstance().get(Calendar.DATE));
+            dpv.setClickedState(this.date);
         }else{
             if(mYear2 == year && mMonth2 == month){
                 dpv.setClickedState(date);

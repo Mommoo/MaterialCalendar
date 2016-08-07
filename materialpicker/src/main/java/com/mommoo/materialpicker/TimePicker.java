@@ -42,32 +42,35 @@ public class TimePicker extends Picker {
 
     public TimePicker(Context context) {
         super(context);
-        initialize(context);
+        initialize(context,calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),calendar.get(Calendar.AM_PM));
     }
 
-    public TimePicker(Context context, int themeResId) {
+    public TimePicker(Context context,int hour, int minute, int am_pm){
+        super(context);
+        calendar.set(Calendar.HOUR,hour);
+        calendar.set(Calendar.MINUTE,minute);
+        calendar.set(Calendar.AM_PM,am_pm);
+        initialize(context,calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),calendar.get(Calendar.AM_PM));
+    }
+
+    private TimePicker(Context context, int themeResId) {
         super(context, themeResId);
-        initialize(context);
     }
 
-    protected TimePicker(Context context, boolean cancelable, DialogInterface.OnCancelListener cancelListener) {
+    private TimePicker(Context context, boolean cancelable, DialogInterface.OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
-        initialize(context);
     }
 
-    private void initialize(Context context){
+    private void initialize(Context context,int hour,int minute,int am_pm){
         setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,getDialogWidth()/18);
         setOnDialogWidthChanged(new OnDialogWidthChanged() {
             @Override
-            public void changed(int width) {
-                System.out.println(width);
-                setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,width/18);
-            }
+            public void changed(int width) {setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,width/18);}
         });
         pickBtn.setImageResource(R.mipmap.swap);
-        this.am_pm = calendar.get(Calendar.AM_PM);
-        this.hour = calendar.get(Calendar.HOUR);
-        this.minute = calendar.get(Calendar.MINUTE);
+        this.am_pm = am_pm;
+        this.hour = hour;
+        this.minute = minute;
         pickerView = new TimePickerView(context, HOUR_MODE, calendar);
         TimePickerView.NotifyChanged notifyChanged = new TimePickerView.NotifyChanged() {
             @Override
@@ -111,7 +114,7 @@ public class TimePicker extends Picker {
 
                 if (isTime) {
                     layout = (ClipAnimLayout) getSavedContentView(0);
-                    pickerView.setData(am_pm,hour,minute);
+                    pickerView.setData(TimePicker.this.am_pm,TimePicker.this.hour,TimePicker.this.minute);
                 } else {
                     if (!isSavedView) {
                         int radius = pickerDimension.getPickBtnAnimCircleRadius();

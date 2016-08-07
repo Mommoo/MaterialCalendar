@@ -46,15 +46,15 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
     public DatePicker(Context context) {
         super(context);
         Calendar cal = Calendar.getInstance();
-        initialize(context, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
+        initialize(context, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),cal.get(Calendar.DATE));
     }
 
-    public DatePicker(Context context, int year, int month) {
+    public DatePicker(Context context, int year, int month, int date) {
         super(context);
-        initialize(context, year, month + 1);
+        initialize(context, year, month, date);
     }
 
-    private void initialize(Context context, final int year, int month) {
+    private void initialize(Context context, final int year, int month, int date) {
         setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,getDialogWidth()/28);
         setOnDialogWidthChanged(new OnDialogWidthChanged() {
             @Override
@@ -63,11 +63,12 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
             }
         });
         pickBtn.setImageResource(R.mipmap.swap);
-        Calendar cal = Calendar.getInstance();
-        this.year = year;
-        this.month = month;
-        this.date = cal.get(Calendar.DATE);
-        inputDialogTitle(year,month,date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year,month,date);
+        this.year = calendar.get(Calendar.YEAR);
+        this.month = calendar.get(Calendar.MONTH) +1;
+        this.date = calendar.get(Calendar.DATE);
+        inputDialogTitle(this.year,this.month,this.date);
 
         View view = LayoutInflater.from(context).inflate(R.layout.date_picker_view, null);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
@@ -82,7 +83,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(adapter);
 
-        position = adapter.getPosition(year, month);
+        position = adapter.getPosition(this.year, this.month, this.date);
         viewPager.setCurrentItem(position);
         viewPager.setOffscreenPageLimit(5);
 
@@ -130,7 +131,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
                 if (isDate) {
                     layout = (ClipAnimLayout) getSavedContentView(0);
                     DatePickerViewPagerAdapter viewPagerAdapter =((DatePickerViewPagerAdapter)viewPager.getAdapter());
-                    int position = viewPagerAdapter.getPosition(DatePicker.this.year,DatePicker.this.month);
+                    int position = viewPagerAdapter.getPosition(DatePicker.this.year,DatePicker.this.month,DatePicker.this.date);
                     viewPager.setCurrentItem(position,true);
 
                     setDatePickViewClickedState(false);
