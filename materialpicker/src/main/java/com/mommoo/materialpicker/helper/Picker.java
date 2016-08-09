@@ -45,8 +45,7 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
     private final int MINIMUM_WIDTH = DIPManager.dip2px(220,getContext());
     private final int MAXIMUM_WIDTH = 9*sm.getScreenWidth()/10;
     private static boolean isShowing;
-    private int dialogWidth,themeColor,unit;
-    private float textSize;
+    private int dialogWidth,themeColor;
     private final int DEFAULT_COLOR = ContextCompat.getColor(getContext(), R.color.colorAccent);
     private final int CONTENT_VIEW_ADD_INDEX = 2;
     private LinearLayout mainBody;
@@ -293,6 +292,22 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
 
     protected void doVibration(){
         if (isVibrate) vibrator.vibrate(30);
+    }
+
+    public void changeAcceptButtonText(String text){
+        accept.setText(text);
+    }
+
+    public String getAcceptButtonText(){
+        return accept.getText().toString();
+    }
+
+    public void changeDeclineButtonText(String text){
+        decline.setText(text);
+    }
+
+    public String getDeclineButtonText(){
+        return decline.getText().toString();
     }
 
     @Override
