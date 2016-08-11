@@ -243,7 +243,10 @@ public class TimePickerView extends View {
             if(am || pm){
                 if(am)am_pm = 0;
                 if(pm)am_pm = 1;
-                if(notifyChanged != null) notifyChanged.notify(hour,minute,am_pm);
+                if(notifyChanged != null) {
+                    notifyChanged.notify(hour,minute,am_pm);
+                    notifyChanged.vibrate();
+                }
                 invalidate();
             }
             if(viewMode == MINUTE_MODE && !movable && !isAnim){

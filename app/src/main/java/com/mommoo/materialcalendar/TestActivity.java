@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.mommoo.materialpicker.AlarmPicker;
 import com.mommoo.materialpicker.DatePicker;
 import com.mommoo.materialpicker.TimePicker;
 import com.mommoo.materialpicker.animation.ClipAnimation;
@@ -19,7 +20,6 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +80,19 @@ public class TestActivity extends AppCompatActivity {
                     }
                 });
                 timePicker.show();
+            }
+        });
+        findViewById(R.id.btn3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlarmPicker alarmPicker = new AlarmPicker(TestActivity.this,-10,1,10,12);
+                alarmPicker.setOnAlarmSet(new AlarmPicker.OnAlarmSet() {
+                    @Override
+                    public void onAlarm(boolean isAccept, int dDay, int am_pm, int hour, int minute) {
+                        System.out.println(isAccept+","+dDay+","+am_pm+","+hour+","+minute);
+                    }
+                });
+                alarmPicker.show();
             }
         });
     }

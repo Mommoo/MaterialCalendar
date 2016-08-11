@@ -48,6 +48,7 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
     private int dialogWidth,themeColor;
     private final int DEFAULT_COLOR = ContextCompat.getColor(getContext(), R.color.colorAccent);
     private final int CONTENT_VIEW_ADD_INDEX = 2;
+    private int forceHeight;
     private LinearLayout mainBody;
     private TextView primaryTitle,primaryDarkTitle,decline,accept;
     private View contentView;
@@ -58,7 +59,7 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
     private PickerAnimation animation;
     private ClipAnimLayout rootView;
     protected Vibrator vibrator;
-    protected boolean isVibrate = true,once,pickBtnClick;
+    protected boolean isVibrate = true,once,pickBtnClick,prevent;
     protected ImageView pickBtn;
     private OnPickBtnListener onPickBtnListener;
     private OnDialogWidthChanged dialogWidthChanged;
@@ -121,7 +122,7 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
 
         initWidget();
         dialogWidth = DEFAULT_WIDTH;
-        setDialogWidth(dialogWidth);
+        changeDialogWidth(dialogWidth);
         setThemeColor(DEFAULT_COLOR);
     }
 
@@ -182,12 +183,18 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
         });
     }
 
+
+    protected void forceChangeContentHeight(int contentHeight){
+        this.forceHeight = contentHeight;
+    }
+
     /**
      *
      * @param view
      *   Content of Picker :  ex) Date, Time ...
      *
      */
+
     public void setDialogContentView(View view){
         if(this.contentView != null) {
             this.contentView.setTop(0);
@@ -200,7 +207,7 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
         }else{
             pickerDimension.setContentWidth(getContext(),getDialogWidth());
             view.setTag(0);
-            view.setLayoutParams(new LinearLayout.LayoutParams(pickerDimension.getContentWidth(),pickerDimension.getContentHeight()));
+            view.setLayoutParams(new LinearLayout.LayoutParams(pickerDimension.getContentWidth(),forceHeight==0?pickerDimension.getContentHeight():forceHeight));
         }
         if(view.getTag()==null) view.setTag(cacheViewArray.size());
         mainBody.addView(view,CONTENT_VIEW_ADD_INDEX);
@@ -220,7 +227,15 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
         return cacheViewArray.get(index);
     }
 
+    protected void preventChangeWidth(boolean prevent){
+        this.prevent = prevent;
+    }
+
     public void setDialogWidth(int width){
+        if(!prevent) changeDialogWidth(width);
+    }
+
+    private void changeDialogWidth(int width){
         if(MINIMUM_WIDTH<=width && width<= MAXIMUM_WIDTH) {
             mainBody.getLayoutParams().width = width;
             pickerDimension.setContentWidth(getContext(),width);
