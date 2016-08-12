@@ -8,3 +8,4 @@ v 0.1.4 : fix constructor bug : after we decide start date or start time,but whe
 v 0.1.5 : add function : can change selecting button-text<br />
 v 0.1.6 : publish Alarm-picker<br />
 v 0.1.7 : fix Alarm-picker bug : when we uesd setThemeColor() mathod, not changed all conatiner theme in dialog <br />
+v 0.1.8 : add Alarm-picker constructor : add parameter (java.util.Calendar) <br />
