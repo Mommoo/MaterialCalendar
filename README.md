@@ -7,4 +7,4 @@ v 0.1.3 : fix setThemeColor bug : when we used setThemeColor() method, not chang
 v 0.1.4 : fix constructor bug : after we decide start date or start time,but when we execute dialog not applyed start info <br />
 v 0.1.5 : add function : can change selecting button-text<br />
 v 0.1.6 : publish Alarm-picker<br />
-v 0.1.6 : fix Alarm-picker bug : when we uesd setThemeColor() mathod, not changed all conatiner theme in dialog <br />
+v 0.1.7 : fix Alarm-picker bug : when we uesd setThemeColor() mathod, not changed all conatiner theme in dialog <br />
