@@ -48,6 +48,13 @@ public class AlarmPicker extends Picker implements NotifyListViewAdapter.DataCha
         initialize(context);
     }
 
+    public AlarmPicker(Context context,int d_day,Calendar calendar){
+        super(context);
+        this.d_day = d_day;
+        this.calendar = calendar;
+        initialize(context);
+    }
+
     public AlarmPicker(Context context,int d_day,int am_pm,int hour, int minute){
         super(context);
         this.d_day = d_day;
