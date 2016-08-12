@@ -18,6 +18,7 @@ import com.mommoo.materialpicker.toolkit.PickerDimension;
 import com.mommoo.materialpicker.widget.CircleImageView;
 import com.mommoo.materialpicker.widget.NotifyListView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -35,6 +36,7 @@ public class AlarmPicker extends Picker implements NotifyListViewAdapter.DataCha
     private OnAcceptListener onAcceptListener;
     private OnDeclineListener onDeclineListener;
     private OnAlarmSet alarmSet;
+    private ArrayList<View> views = new ArrayList<>();
 
     public interface OnAlarmSet{
         public void onAlarm(boolean isAccept,int dDay,int am_pm,int hour, int minute);
@@ -64,6 +66,19 @@ public class AlarmPicker extends Picker implements NotifyListViewAdapter.DataCha
     protected AlarmPicker(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         initialize(context);
+    }
+
+    @Override
+    public void setThemeColor(int color) {
+        super.setThemeColor(color);
+        pickBtn.setBackgroundColor(Color.TRANSPARENT);
+        if(views != null &&views.size() !=0 ){
+            for(int i=0,size = views.size();i<size;i++){
+                View view = views.get(i);
+                if(i==0 || i==2) ((CircleImageView)view).setCircleBackgroundColor(color);
+                else view.setBackgroundColor(color);
+            }
+        }
     }
 
     public void initialize(Context context){
@@ -121,6 +136,7 @@ public class AlarmPicker extends Picker implements NotifyListViewAdapter.DataCha
                 if(i==0)dots[i].setY(padding + 7*itemHeight/3);
                 else dots[i].setY(padding + 8*itemHeight/3);
                 frameLayout.addView(dots[i]);
+                views.add(dots[i]);
             }
             if(i<4){
                 lines[i].setX((viewWidth/4) + i*(viewWidth));
@@ -130,6 +146,7 @@ public class AlarmPicker extends Picker implements NotifyListViewAdapter.DataCha
                 lines[i].setY(padding + itemHeight*3);
             }
             frameLayout.addView(lines[i]);
+            views.add(lines[i]);
         }
 
         setDialogContentView(frameLayout);

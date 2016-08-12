@@ -86,6 +86,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlarmPicker alarmPicker = new AlarmPicker(TestActivity.this,-10,1,10,12);
+                alarmPicker.setThemeColor(Color.YELLOW);
                 alarmPicker.setOnAlarmSet(new AlarmPicker.OnAlarmSet() {
                     @Override
                     public void onAlarm(boolean isAccept, int dDay, int am_pm, int hour, int minute) {
