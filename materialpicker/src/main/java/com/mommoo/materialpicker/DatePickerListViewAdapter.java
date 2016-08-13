@@ -1,19 +1,11 @@
-package com.mommoo.materialpicker.adapter;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.mommoo.materialpicker.helper.NotifyListViewAdapter;
-import com.mommoo.materialpicker.toolkit.CalendarCalculator;
-import com.mommoo.materialpicker.widget.NotifyListView;
-
 
 /**
  * Created by mommoo on 2016-07-29.
  */
-public class DatePickerListViewAdapter extends NotifyListViewAdapter {
+class DatePickerListViewAdapter extends NotifyListViewAdapter {
     /**
      * @YearPick :  1900 ~ 2100
      * @MonthPick :  1 ~ 12

@@ -1,18 +1,13 @@
-package com.mommoo.materialpicker.view;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
-import com.mommoo.materialpicker.adapter.TimePickerListViewAdapter;
-import com.mommoo.materialpicker.helper.ScrollPickerView;
-import com.mommoo.materialpicker.widget.ClipAnimLayout;
-
 import java.util.Calendar;
 
 /**
  * Created by mommoo on 2016-08-04.
  */
-public class ScrollTimePickerView extends ScrollPickerView implements TimePickerListViewAdapter.DataChanged{
+class ScrollTimePickerView extends ScrollPickerView implements TimePickerListViewAdapter.DataChanged{
     
     private int amPm,hour,minute;
     private TimePickerListViewAdapter amPmAdapter,hourAdapter,minuteAdapter;

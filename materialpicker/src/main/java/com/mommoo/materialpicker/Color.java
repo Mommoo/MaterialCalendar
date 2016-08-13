@@ -1,9 +1,9 @@
-package com.mommoo.materialpicker.toolkit;
+package com.mommoo.materialpicker;
 
 /**
  * Created by mommoo on 2016-07-24.
  */
-public class Color {
+class Color {
     public static int darker(int color){
         float[] hsv = new float[3];
         android.graphics.Color.colorToHSV(color, hsv);

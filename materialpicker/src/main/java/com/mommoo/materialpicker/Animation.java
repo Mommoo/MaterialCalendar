@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.animation;
+package com.mommoo.materialpicker;
 
 import android.animation.TimeInterpolator;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.View;
 /**
  * Created by Mommoo1 on 2016-02-03.
  */
-public abstract class Animation {
+abstract class Animation {
     protected View targetView;
     protected int delayTime;
     protected TimeInterpolator timeInterpolator;

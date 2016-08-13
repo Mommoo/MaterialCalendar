@@ -1,19 +1,15 @@
-package com.mommoo.materialpicker.view;
+package com.mommoo.materialpicker;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.util.AttributeSet;
-
-import com.mommoo.materialpicker.adapter.DatePickerListViewAdapter;
-import com.mommoo.materialpicker.helper.ScrollPickerView;
-import com.mommoo.materialpicker.widget.ClipAnimLayout;
 
 import java.util.Calendar;
 
 /**
  * Created by mommoo on 2016-07-29.
  */
-public class ScrollDatePickerView extends ScrollPickerView implements DatePickerListViewAdapter.DataChanged{
+class ScrollDatePickerView extends ScrollPickerView implements DatePickerListViewAdapter.DataChanged{
 
     private int year,month, date;
     private DatePickerListViewAdapter yearAdapter,monthAdapter,dateAdapter;

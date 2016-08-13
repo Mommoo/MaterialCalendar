@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.widget;
+package com.mommoo.materialpicker;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -16,8 +16,6 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import com.mommoo.materialpicker.R;
-
 /**
  * Created by mommoo on 2016-07-02.
  * @author mommoo
@@ -29,7 +27,7 @@ import com.mommoo.materialpicker.R;
  *
  *
  */
-public class ClipAnimLayout extends FrameLayout {
+class ClipAnimLayout extends FrameLayout {
 
     private Path path;
     private Builder builder;

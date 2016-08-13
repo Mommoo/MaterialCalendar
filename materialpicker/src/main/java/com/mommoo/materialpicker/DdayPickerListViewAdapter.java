@@ -1,13 +1,11 @@
-package com.mommoo.materialpicker.adapter;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
-
-import com.mommoo.materialpicker.helper.NotifyListViewAdapter;
 
 /**
  * Created by mommoo on 2016-08-10.
  */
-public class DdayPickerListViewAdapter extends NotifyListViewAdapter{
+class DdayPickerListViewAdapter extends NotifyListViewAdapter {
     public DdayPickerListViewAdapter(Context context) {
         super(context, 0);
         adapterData = new int[1][205];

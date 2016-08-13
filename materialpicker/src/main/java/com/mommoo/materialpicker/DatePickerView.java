@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.view;
+package com.mommoo.materialpicker;
 
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -14,17 +14,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
-import com.mommoo.materialpicker.R;
-import com.mommoo.materialpicker.adapter.DatePickerViewPagerAdapter;
-import com.mommoo.materialpicker.toolkit.CalendarCalculator;
-import com.mommoo.materialpicker.toolkit.PickerDimension;
-
 import java.util.Calendar;
 
 /**
  * Created by mommoo on 2016-07-27.
  */
-public class DatePickerView extends View{
+class DatePickerView extends View{
 
     private int startWeek,targetPosition=-1,todayDate=-1;
     private boolean reDraw=true,isAnim,isClicked;
@@ -272,7 +267,7 @@ public class DatePickerView extends View{
             float[] HSV = new float[3];
             Color.colorToHSV(standardColor,HSV);
             circleColor = Color.HSVToColor(100,HSV);
-            todayColor = com.mommoo.materialpicker.toolkit.Color.darker(standardColor);
+            todayColor = com.mommoo.materialpicker.Color.darker(standardColor);
             inCircleTextColor = Color.WHITE;
         }
 
@@ -280,7 +275,7 @@ public class DatePickerView extends View{
             float[] HSV = new float[3];
             Color.colorToHSV(color,HSV);
             circleColor = Color.HSVToColor(100,HSV);
-            todayColor = com.mommoo.materialpicker.toolkit.Color.darker(color);
+            todayColor = com.mommoo.materialpicker.Color.darker(color);
         }
 
         @Override

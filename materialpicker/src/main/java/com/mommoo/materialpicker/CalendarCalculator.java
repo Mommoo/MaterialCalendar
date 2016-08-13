@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.toolkit;
+package com.mommoo.materialpicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,7 +7,7 @@ import java.util.Locale;
 /**
  * Created by mommoo on 2016-07-18.
  */
-public class CalendarCalculator {
+class CalendarCalculator {
     private int[] monthArray = new int[13];
     private int year,month;
     public CalendarCalculator(int year, int month){

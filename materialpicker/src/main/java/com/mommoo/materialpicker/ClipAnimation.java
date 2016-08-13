@@ -1,11 +1,11 @@
-package com.mommoo.materialpicker.animation;
+package com.mommoo.materialpicker;
 
 import android.view.View;
 
 /**
  * Created by mommoo on 2016-07-29.
  */
-public class ClipAnimation extends PickerAnimation{
+public class ClipAnimation extends PickerAnimation {
 
     private float fromX,fromY;
     private int duration;

@@ -14,13 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mommoo.materialpicker.adapter.DatePickerViewPagerAdapter;
-import com.mommoo.materialpicker.helper.Picker;
-import com.mommoo.materialpicker.toolkit.CalendarCalculator;
-import com.mommoo.materialpicker.view.DatePickerView;
-import com.mommoo.materialpicker.view.ScrollDatePickerView;
-import com.mommoo.materialpicker.widget.ClipAnimLayout;
-
 import java.util.Calendar;
 
 /**
@@ -30,7 +23,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
 
     private int year, month, date, position;
     private OnDateSet onDateSet;
-    private Picker.OnAcceptListener onAcceptListener;
+    private OnAcceptListener onAcceptListener;
     private TextView yearTextView, monthTextView;
     private TextView[] dayTextViews = new TextView[7];
     private String[] fullDays = CalendarCalculator.getFullDays();
@@ -55,11 +48,13 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
     }
 
     private void initialize(Context context, final int year, int month, int date) {
-        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,getDialogWidth()/28);
+        int testSize = DIPManager.px2dip(getDialogWidth()/7,context);
+        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,testSize);
         setOnDialogWidthChanged(new OnDialogWidthChanged() {
             @Override
             public void changed(int width) {
-                setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,width/28);
+                int testSize = DIPManager.px2dip(width/7,getContext());
+                setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,testSize);
             }
         });
         pickBtn.setImageResource(R.mipmap.swap);

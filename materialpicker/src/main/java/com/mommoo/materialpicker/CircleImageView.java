@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.widget;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 /**
  * Created by Mommoo1 on 2016-02-08.
  */
-public class CircleImageView extends ImageView {
+class CircleImageView extends ImageView {
     private Paint paint,paint2;
     private int PADDING;
     private Context context;

@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.helper;
+package com.mommoo.materialpicker;
 
 
 import android.app.Dialog;
@@ -14,19 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mommoo.materialpicker.R;
-import com.mommoo.materialpicker.animation.AnimationCallBack;
-import com.mommoo.materialpicker.animation.ClipAnimation;
-import com.mommoo.materialpicker.animation.CurveAnimation;
-import com.mommoo.materialpicker.animation.CurveTransitionAnimation;
-import com.mommoo.materialpicker.animation.PickerAnimation;
-import com.mommoo.materialpicker.manager.DIPManager;
-import com.mommoo.materialpicker.manager.ScreenManager;
-import com.mommoo.materialpicker.toolkit.Color;
-import com.mommoo.materialpicker.toolkit.PickerDimension;
-import com.mommoo.materialpicker.widget.CircleImageView;
-import com.mommoo.materialpicker.widget.ClipAnimLayout;
-
 import java.util.ArrayList;
 
 
@@ -38,7 +25,7 @@ import java.util.ArrayList;
  *
  *
  */
-public abstract class Picker extends Dialog implements View.OnClickListener{
+abstract class Picker extends Dialog implements View.OnClickListener{
 
     private ScreenManager sm = new ScreenManager(getContext());
     private final int DEFAULT_WIDTH = DIPManager.dip2px(280,getContext());
@@ -71,17 +58,9 @@ public abstract class Picker extends Dialog implements View.OnClickListener{
     public void setOnDialogWidthChanged(OnDialogWidthChanged onDialogWidthChanged){
         this.dialogWidthChanged = onDialogWidthChanged;
     }
-
-    public interface OnAcceptListener{
-        void accept();
-    }
     
     protected interface CallBackAcceptListener extends OnAcceptListener{
         void callBack(boolean isAccept);
-    }
-    
-    public interface OnDeclineListener{
-        void decline();
     }
 
     protected interface CallBackDeclineListener extends OnDeclineListener{

@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.animation;
+package com.mommoo.materialpicker;
 
 import android.animation.TimeInterpolator;
 import android.graphics.Color;
@@ -6,14 +6,11 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import com.mommoo.materialpicker.manager.ScreenManager;
-import com.mommoo.materialpicker.widget.CircleImageView;
-
 
 /**
  * Created by mommoo on 2016-07-28.
  */
-public class CurveAnimation extends PickerAnimation{
+public class CurveAnimation extends PickerAnimation {
 
     private View targetView;
     private Builder builder;

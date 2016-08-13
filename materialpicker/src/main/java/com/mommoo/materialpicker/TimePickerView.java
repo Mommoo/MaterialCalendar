@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.view;
+package com.mommoo.materialpicker;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -18,17 +18,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
-import com.mommoo.materialpicker.R;
-import com.mommoo.materialpicker.manager.DIPManager;
-import com.mommoo.materialpicker.toolkit.CalendarCalculator;
-import com.mommoo.materialpicker.toolkit.PickerDimension;
-
 import java.util.Calendar;
 
 /**
  * Created by mommoo on 2016-08-01.
  */
-public class TimePickerView extends View {
+class TimePickerView extends View {
 
     private boolean once,movable,isAnim,isLeftArrowTouch,isRightArrowTouch;
     private Calendar calendar;
@@ -330,7 +325,9 @@ public class TimePickerView extends View {
         else if(remainder>standardRemind) angle = tempAngle + (quotient-remainder);
         if(mode)hour = CalendarCalculator.transAngleToHour(angle);
         else minute = CalendarCalculator.transAngleToMinute(angle)==60?0:CalendarCalculator.transAngleToMinute(angle);
-        if(notifyChanged != null && hour != -1 && minute != -1) notifyChanged.notify(hour,minute,am_pm);
+        if(notifyChanged != null && hour != -1 && minute != -1) {
+            notifyChanged.notify(hour,minute,am_pm);
+        }
         invalidate();
     }
 

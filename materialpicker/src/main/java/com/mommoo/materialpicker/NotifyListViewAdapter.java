@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.helper;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -15,12 +15,12 @@ import com.mommoo.materialpicker.R;
 /**
  * Created by mommoo on 2016-08-04.
  */
-public abstract class NotifyListViewAdapter extends BaseAdapter {
+abstract class NotifyListViewAdapter extends BaseAdapter {
 
     protected int[][] adapterData;
     protected int firstVisiblePosition = 0;
     protected final int dataSetIndex;
-    private int itemHeight;
+    private double itemHeight;
 
     private final int PRIMARY_TEXT_COLOR;
     private final int SECONDARY_TEXT_COLOR;
@@ -28,7 +28,7 @@ public abstract class NotifyListViewAdapter extends BaseAdapter {
 
     protected enum NotifyTextSize{MAXIMUM_TEXT_SIZE,DEFAULT_TEXT_SIZE,MINIMUM_TEXT_SIZE}
     private NotifyTextSize targetSize = NotifyTextSize.MAXIMUM_TEXT_SIZE;
-    private static int[][] ratioStorage = new int[3][3];
+    private static double[][] ratioStorage = new double[3][3];
 
     private int PRIMARY_TEXT_SIZE;
     private int SECONDARY_TEXT_SIZE;
@@ -59,9 +59,9 @@ public abstract class NotifyListViewAdapter extends BaseAdapter {
         PRIMARY_TEXT_COLOR = ContextCompat.getColor(context, R.color.primaryText);
         SECONDARY_TEXT_COLOR = ContextCompat.getColor(context, R.color.secondaryText);
         HINT_TEXT_COLOR = ContextCompat.getColor(context, R.color.hintText);
-        ratioStorage[0][0] = 6; ratioStorage[0][1] = 10; ratioStorage[0][2] = 12;
-        ratioStorage[1][0] = 7; ratioStorage[1][1] = 11; ratioStorage[1][2] = 13;
-        ratioStorage[2][0] = 8; ratioStorage[2][1] = 12; ratioStorage[2][2] = 14;
+        ratioStorage[0][0] = 1.5; ratioStorage[0][1] = 2.5; ratioStorage[0][2] = 3.5;
+        ratioStorage[1][0] = 2; ratioStorage[1][1] = 3; ratioStorage[1][2] = 4;
+        ratioStorage[2][0] = 2.5; ratioStorage[2][1] = 3.5; ratioStorage[2][2] = 4.5;
         this.dataSetIndex = dataSetIndex;
     }
 
@@ -84,7 +84,7 @@ public abstract class NotifyListViewAdapter extends BaseAdapter {
         }
     }
 
-    public int getItemHeight() {
+    public double getItemHeight() {
         return itemHeight;
     }
 
@@ -94,12 +94,12 @@ public abstract class NotifyListViewAdapter extends BaseAdapter {
         if(convertView ==null){
             convertView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.year_picker_item_view, viewGroup, false);
             if (itemHeight == 0) {
-                itemHeight = (int) Math.ceil((double) viewGroup.getHeight() / 5.0);
-                PRIMARY_TEXT_SIZE = itemHeight/ratioStorage[targetSize.ordinal()][0];
-                SECONDARY_TEXT_SIZE = itemHeight/ratioStorage[targetSize.ordinal()][1];
-                HINT_TEXT_SIZE = itemHeight/ratioStorage[targetSize.ordinal()][2];
+                itemHeight =  Math.ceil((double) viewGroup.getHeight() / 5.0);
+                PRIMARY_TEXT_SIZE = DIPManager.px2dip((int)(itemHeight/ratioStorage[targetSize.ordinal()][0]),convertView.getContext());
+                SECONDARY_TEXT_SIZE = DIPManager.px2dip((int)(itemHeight/ratioStorage[targetSize.ordinal()][1]),convertView.getContext());
+                HINT_TEXT_SIZE = DIPManager.px2dip((int)(itemHeight/ratioStorage[targetSize.ordinal()][2]),convertView.getContext());
             }
-            convertView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, itemHeight));
+            convertView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, (int)itemHeight));
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else viewHolder = (ViewHolder) convertView.getTag();

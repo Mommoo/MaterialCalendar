@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.animation;
+package com.mommoo.materialpicker;
 
 import android.animation.TimeInterpolator;
 import android.view.View;

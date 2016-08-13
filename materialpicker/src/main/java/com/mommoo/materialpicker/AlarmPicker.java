@@ -1,22 +1,12 @@
 package com.mommoo.materialpicker;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.mommoo.materialpicker.adapter.DdayPickerListViewAdapter;
-import com.mommoo.materialpicker.adapter.TimePickerListViewAdapter;
-import com.mommoo.materialpicker.helper.NotifyListViewAdapter;
-import com.mommoo.materialpicker.helper.Picker;
-import com.mommoo.materialpicker.manager.DIPManager;
-import com.mommoo.materialpicker.toolkit.CalendarCalculator;
-import com.mommoo.materialpicker.toolkit.PickerDimension;
-import com.mommoo.materialpicker.widget.CircleImageView;
-import com.mommoo.materialpicker.widget.NotifyListView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -96,7 +86,8 @@ public class AlarmPicker extends Picker implements NotifyListViewAdapter.DataCha
 
         setThemeColor(ContextCompat.getColor(context,R.color.colorAccent));
         preventChangeWidth(true);
-        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,getDialogWidth()/45);
+        int textSize = DIPManager.px2dip(getDialogWidth()/10,context);
+        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,textSize);
         pickBtn.setBackgroundColor(Color.TRANSPARENT);
         PickerDimension pickerDimension = PickerDimension.getInstance();
         int viewHeight = 4*pickerDimension.getContentHeight()/5;
@@ -161,7 +152,7 @@ public class AlarmPicker extends Picker implements NotifyListViewAdapter.DataCha
 
     private View getLineAppearance(int viewWidth){
         View view = new View(getContext());
-        view.setBackgroundColor(com.mommoo.materialpicker.toolkit.Color.lighten(getThemeColor(),0.2f));
+        view.setBackgroundColor(com.mommoo.materialpicker.Color.lighten(getThemeColor(),0.2f));
         view.setLayoutParams(new FrameLayout.LayoutParams(viewWidth/2, DIPManager.dip2px(1,getContext())));
         return view;
     }

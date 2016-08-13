@@ -11,12 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.mommoo.materialpicker.helper.Picker;
-import com.mommoo.materialpicker.manager.DIPManager;
-import com.mommoo.materialpicker.toolkit.CalendarCalculator;
-import com.mommoo.materialpicker.view.ScrollTimePickerView;
-import com.mommoo.materialpicker.view.TimePickerView;
-import com.mommoo.materialpicker.widget.ClipAnimLayout;
 
 import java.util.Calendar;
 
@@ -62,10 +56,14 @@ public class TimePicker extends Picker {
     }
 
     private void initialize(Context context,int hour,int minute,int am_pm){
-        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,getDialogWidth()/18);
+        int textSize = DIPManager.px2dip(9*getDialogWidth()/40,getContext());
+        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,textSize);
         setOnDialogWidthChanged(new OnDialogWidthChanged() {
             @Override
-            public void changed(int width) {setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,width/18);}
+            public void changed(int width) {
+                int textSize = DIPManager.px2dip(9*width/40,getContext());
+                setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,textSize);
+            }
         });
         pickBtn.setImageResource(R.mipmap.swap);
         this.am_pm = am_pm;

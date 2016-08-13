@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.widget;
+package com.mommoo.materialpicker;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,13 +10,11 @@ import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.mommoo.materialpicker.helper.NotifyListViewAdapter;
-
 
 /**
  * Created by mommoo on 2016-07-30.
  */
-public class NotifyListView extends ListView {
+class NotifyListView extends ListView {
 
     private int lastFirstVisibleItem = -1;
     private boolean notify,flag;

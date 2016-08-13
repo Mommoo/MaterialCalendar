@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.animation;
+package com.mommoo.materialpicker;
 
 import android.animation.ValueAnimator;
 import android.graphics.Path;

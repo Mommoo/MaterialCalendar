@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.helper;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -6,17 +6,11 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.mommoo.materialpicker.R;
-import com.mommoo.materialpicker.manager.DIPManager;
-import com.mommoo.materialpicker.toolkit.PickerDimension;
-import com.mommoo.materialpicker.widget.ClipAnimLayout;
-import com.mommoo.materialpicker.widget.NotifyListView;
-
 
 /**
  * Created by mommoo on 2016-08-04.
  */
-public abstract class ScrollPickerView extends ClipAnimLayout {
+abstract class ScrollPickerView extends ClipAnimLayout {
 
     private final int count = 3;
     protected NotifyListView[] pickListView = new NotifyListView[count];

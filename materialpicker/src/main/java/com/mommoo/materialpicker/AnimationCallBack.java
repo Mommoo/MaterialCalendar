@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.animation;
+package com.mommoo.materialpicker;
 
 /**
  * Created by Mommoo1 on 2016-02-03.

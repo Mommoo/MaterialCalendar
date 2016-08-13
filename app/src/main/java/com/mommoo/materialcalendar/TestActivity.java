@@ -1,24 +1,33 @@
 package com.mommoo.materialcalendar;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.mommoo.materialpicker.AlarmPicker;
+import com.mommoo.materialpicker.ClipAnimation;
+import com.mommoo.materialpicker.DIPManager;
 import com.mommoo.materialpicker.DatePicker;
+import com.mommoo.materialpicker.OnAcceptListener;
+import com.mommoo.materialpicker.OnDeclineListener;
 import com.mommoo.materialpicker.TimePicker;
-import com.mommoo.materialpicker.animation.ClipAnimation;
-import com.mommoo.materialpicker.animation.CurveAnimation;
-import com.mommoo.materialpicker.animation.PickerAnimation;
-import com.mommoo.materialpicker.helper.Picker;
-import com.mommoo.materialpicker.manager.DIPManager;
+import com.mommoo.materialpicker.CurveAnimation;
+import com.mommoo.materialpicker.PickerAnimation;
+
 
 public class TestActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Resources resources = getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = 30 / getResources().getDisplayMetrics().density;
+        System.out.println(px+","+DIPManager.dip2px(30,this));
         setContentView(R.layout.activity_test);
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,7 +37,7 @@ public class TestActivity extends AppCompatActivity {
                 view.getLocationOnScreen(location);
                 float fromX = location[0], fromY = location[1];
                 CurveAnimation curveAnimation = new CurveAnimation(new CurveAnimation.Builder()
-                        .setStartRadius(DIPManager.dip2px(20,TestActivity.this)).setStartLocation(fromX,fromY).setAnimCallBack(new PickerAnimation.AnimCallBack() {
+                        .setStartRadius(100).setStartLocation(fromX,fromY).setAnimCallBack(new PickerAnimation.AnimCallBack() {
                             @Override
                             public void callBack() {
                                 System.out.println("callBack");
@@ -36,13 +45,13 @@ public class TestActivity extends AppCompatActivity {
                         }));
 
                 datePicker.setAnimation(curveAnimation);
-                datePicker.setOnAcceptListener(new Picker.OnAcceptListener() {
+                datePicker.setOnAcceptListener(new OnAcceptListener() {
                     @Override
                     public void accept() {
                         System.out.println("accept");
                     }
                 });
-                datePicker.setOnDeclineListener(new Picker.OnDeclineListener() {
+                datePicker.setOnDeclineListener(new OnDeclineListener() {
                     @Override
                     public void decline() {
                         System.out.println("decline");
@@ -86,7 +95,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlarmPicker alarmPicker = new AlarmPicker(TestActivity.this,-10,1,10,12);
-                alarmPicker.setThemeColor(Color.YELLOW);
+                alarmPicker.setThemeColor(Color.RED);
                 alarmPicker.setOnAlarmSet(new AlarmPicker.OnAlarmSet() {
                     @Override
                     public void onAlarm(boolean isAccept, int dDay, int am_pm, int hour, int minute) {

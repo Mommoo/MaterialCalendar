@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.manager;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -8,7 +8,7 @@ import android.view.WindowManager;
 /**
  * Created by Mommoo on 2016-02-08.
  */
-public class ScreenManager {
+class ScreenManager {
 
     private Context context;
     private DisplayMetrics displayMetrics = new DisplayMetrics();

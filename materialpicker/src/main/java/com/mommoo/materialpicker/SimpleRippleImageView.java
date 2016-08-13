@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.widget;
+package com.mommoo.materialpicker;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -16,7 +16,7 @@ import android.widget.ImageView;
 /**
  * Created by mommoo on 2016-07-28.
  */
-public class SimpleRippleImageView extends ImageView {
+class SimpleRippleImageView extends ImageView {
     private int circleColor = Color.parseColor("#31000000");
     private float pivotX,pivotY;
     private Paint paint = new Paint();
@@ -141,7 +141,7 @@ public class SimpleRippleImageView extends ImageView {
         remainDuration = 0;
         radius = 0;
         startAnim = false;
-        onClickListener.onClick(SimpleRippleImageView.this);
+        onClickListener.onClick(this);
     }
 
     private void setRadius(float radius){

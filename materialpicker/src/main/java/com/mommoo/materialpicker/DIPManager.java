@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.manager;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.util.TypedValue;
@@ -11,6 +11,6 @@ public class DIPManager {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
     public static int px2dip(int px,Context context){
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, context.getResources().getDisplayMetrics());
+        return (int)(px/context.getResources().getDisplayMetrics().density);
     }
 }

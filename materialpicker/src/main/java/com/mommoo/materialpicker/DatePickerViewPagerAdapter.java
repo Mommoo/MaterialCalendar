@@ -1,4 +1,4 @@
-package com.mommoo.materialpicker.adapter;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -6,15 +6,13 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mommoo.materialpicker.view.DatePickerView;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
  * Created by mommoo on 2016-07-27.
  */
-public class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener, DatePickerView.NotifyClickedData{
+class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener, DatePickerView.NotifyClickedData{
     @SuppressWarnings("unused")
     private Context context;
     final static int BASE_YEAR = 2015;

@@ -1,15 +1,13 @@
-package com.mommoo.materialpicker.toolkit;
+package com.mommoo.materialpicker;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-import com.mommoo.materialpicker.manager.DIPManager;
-
 /**
  * Created by mommoo on 2016-07-28.
  */
-public class PickerDimension {
+class PickerDimension {
 
     private static PickerDimension cal = new PickerDimension();
     private int contentHeight,contentWidth,radius;
