@@ -6,7 +6,7 @@ import android.util.TypedValue;
 /**
  * Created by Mommoo on 2015-02-18.
  */
-public class DIPManager {
+class DIPManager {
     public static int dip2px(int dip, Context context){
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }

@@ -352,12 +352,14 @@ abstract class Picker extends Dialog implements View.OnClickListener{
     public void onClick(View view) {
         dismiss();
         if(view.getId()==R.id.decline){
+
             if(callBackDeclineListener != null){
                 callBackDeclineListener.decline();
                 callBackDeclineListener.callBack(false);
             }
         }
         if(view.getId()==R.id.accept){
+
             if(callBackAcceptListener != null) {
                 callBackAcceptListener.accept();
                 callBackAcceptListener.callBack(true);

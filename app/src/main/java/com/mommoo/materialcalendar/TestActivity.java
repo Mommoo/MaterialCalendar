@@ -10,8 +10,8 @@ import android.view.View;
 
 import com.mommoo.materialpicker.AlarmPicker;
 import com.mommoo.materialpicker.ClipAnimation;
-import com.mommoo.materialpicker.DIPManager;
 import com.mommoo.materialpicker.DatePicker;
+import com.mommoo.materialpicker.MonthPicker;
 import com.mommoo.materialpicker.OnAcceptListener;
 import com.mommoo.materialpicker.OnDeclineListener;
 import com.mommoo.materialpicker.TimePicker;
@@ -24,10 +24,6 @@ public class TestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Resources resources = getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = 30 / getResources().getDisplayMetrics().density;
-        System.out.println(px+","+DIPManager.dip2px(30,this));
         setContentView(R.layout.activity_test);
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +99,20 @@ public class TestActivity extends AppCompatActivity {
                     }
                 });
                 alarmPicker.show();
+            }
+        });
+
+        findViewById(R.id.btn4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MonthPicker monthPicker = new MonthPicker(TestActivity.this);
+                monthPicker.setOnDateSet(new MonthPicker.OnDateSet() {
+                    @Override
+                    public void onDate(boolean isAccept, int year, int month) {
+                        System.out.println("year : "+year + " , month : "+ month);
+                    }
+                });
+                monthPicker.show();
             }
         });
     }

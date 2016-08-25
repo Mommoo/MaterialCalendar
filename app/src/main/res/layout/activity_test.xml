@@ -25,4 +25,11 @@
         android:id="@+id/btn3"
         android:layout_width="150dp"
         android:layout_height="70dp" />
+    <Button
+        android:layout_below="@id/btn2"
+        android:layout_toRightOf="@id/btn3"
+        android:text="Month_Picker"
+        android:id="@+id/btn4"
+        android:layout_width="150dp"
+        android:layout_height="70dp" />
 </RelativeLayout>
