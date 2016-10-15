@@ -93,6 +93,9 @@ class TimePickerView extends View {
         this.am_pm = am_pm;
         this.hour = hour;
         this.minute = minute;
+        this.calendar.set(Calendar.AM_PM,am_pm);
+        this.calendar.set(Calendar.HOUR,hour);
+        this.calendar.set(Calendar.MINUTE,minute);
         angle = viewMode==HOUR_MODE?CalendarCalculator.transHourToAngle(this.hour):CalendarCalculator.transMinuteToAngle(this.minute);
         invalidate();
     }
@@ -115,8 +118,8 @@ class TimePickerView extends View {
         if(viewMode== HOUR_MODE) {
             drawAM_PM_CircleAndText(canvas);
             drawRightArrowIcon(canvas);
-        }
-        else drawLeftArrowIcon(canvas);
+        }else drawLeftArrowIcon(canvas);
+
         drawPivotCircle(canvas);
         drawSelectedTextCircle(canvas,angle);
         drawTimeText(canvas);

@@ -21,6 +21,7 @@ import java.util.Calendar;
  */
 public class DatePicker extends Picker implements DatePickerViewPagerAdapter.NotifyChangeData {
 
+    private final Calendar cal = Calendar.getInstance();
     private int year, month, date, position;
     private OnDateSet onDateSet;
     private OnAcceptListener onAcceptListener;
@@ -38,7 +39,6 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
 
     public DatePicker(Context context) {
         super(context);
-        Calendar cal = Calendar.getInstance();
         initialize(context, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),cal.get(Calendar.DATE));
     }
 
@@ -58,12 +58,11 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
             }
         });
         pickBtn.setImageResource(R.mipmap.swap);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year,month,date);
-        this.year = calendar.get(Calendar.YEAR);
-        this.month = calendar.get(Calendar.MONTH) +1;
-        this.date = calendar.get(Calendar.DATE);
-        inputDialogTitle(this.year,this.month,this.date);
+        cal.set(year,month,date);
+        this.year = cal.get(Calendar.YEAR);
+        this.month = cal.get(Calendar.MONTH) +1;
+        this.date = cal.get(Calendar.DATE);
+        setTitle(this.year,this.month,this.date);
 
         View view = LayoutInflater.from(context).inflate(R.layout.date_picker_view, null);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
@@ -158,14 +157,13 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
                         tempCalendar.set(DatePicker.this.year,DatePicker.this.month - 1,DatePicker.this.date);
                         layout = new ScrollDatePickerView(decoView.getContext(),tempCalendar ,builder);
                         ((ScrollDatePickerView)layout).setPickChanged(new ScrollDatePickerView.PickChanged() {
-                            public Calendar cal = Calendar.getInstance();
                             @Override
                             public void dataSet(int year, int month, int date) {
-                                cal.set(year,month-1,date);
+
                                 DatePicker.this.year = year;
                                 DatePicker.this.month = month;
                                 DatePicker.this.date = date;
-                                inputDialogTitle(year,month,date);
+                                setTitle(year,month,date);
                             }
                         });
                         layout.setLayoutParams(params);
@@ -191,8 +189,16 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
         if(adapter!=null)adapter.setThemeColor(color);
     }
 
-    private void inputDialogTitle(int year, int month, int date){
-        Calendar cal = Calendar.getInstance();
+    public void setDate(int year, int month, int date){
+        this.year = year;
+        this.month = month+1;
+        this.date = date;
+        position = adapter.getPosition(this.year, this.month, this.date);
+        viewPager.setCurrentItem(position);
+        setTitle(this.year,this.month,this.date);
+    }
+
+    private void setTitle(int year, int month, int date){
         cal.set(year, month - 1, date);
         String yearString = Integer.toString(year);
         String monthString = Integer.toString(month);
@@ -255,7 +261,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
             this.year = year;
             this.month = month;
             this.date = date;
-            inputDialogTitle(year,month,date);
+            setTitle(year,month,date);
             setDatePickViewClickedState(false);
             setDatePickViewClickedState(true);
         }else{

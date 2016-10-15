@@ -15,12 +15,14 @@ import java.util.Calendar;
 class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener, DatePickerView.NotifyClickedData{
     @SuppressWarnings("unused")
     private Context context;
-    final static int BASE_YEAR = 2015;
-    final static int BASE_MONTH = Calendar.MARCH;
-    final static int PAGES = 5;
-    final static int LOOPS = 1000;
-    final static int BASE_POSITION = PAGES * LOOPS / 2;
-    final Calendar BASE_CAL;
+    private final static int BASE_YEAR = 2015;
+    private final static int BASE_MONTH = Calendar.MARCH;
+    private final static int PAGES = 5;
+    private final static int LOOPS = 1000;
+    private final static int BASE_POSITION = PAGES * LOOPS / 2;
+    private final Calendar BASE_CAL;
+    private final Calendar POSITION_CALENDAR;
+    private final static Calendar CLONE_CALENDAR = Calendar.getInstance();
     private int themeColor;
     private NotifyChangeData notifyChangeData;
     private boolean once;
@@ -33,9 +35,9 @@ class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 
     public DatePickerViewPagerAdapter(Context context) {
         this.context = context;
-        Calendar base = Calendar.getInstance();
-        base.set(BASE_YEAR, BASE_MONTH, 1);
-        BASE_CAL = base;
+        BASE_CAL = Calendar.getInstance();
+        BASE_CAL.set(BASE_YEAR, BASE_MONTH, 1);
+        POSITION_CALENDAR = Calendar.getInstance();
     }
 
     public void setThemeColor(int themeColor){
@@ -53,10 +55,9 @@ class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
     }
 
     public int getPosition(int year, int month, int date) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, 1);
+        POSITION_CALENDAR.set(year, month, 1);
         this.date = date;
-        return BASE_POSITION + howFarFromBase(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
+        return BASE_POSITION + howFarFromBase(POSITION_CALENDAR.get(Calendar.YEAR), POSITION_CALENDAR.get(Calendar.MONTH));
     }
 
     public int howFarFromBase(int year, int month) {
@@ -68,10 +69,10 @@ class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         int howFarFromBase = position - BASE_POSITION;
-        Calendar cal = (Calendar) BASE_CAL.clone();
-        cal.add(Calendar.MONTH, howFarFromBase-1);
-        int mYear2 = cal.get(Calendar.YEAR);
-        int mMonth2 = cal.get(Calendar.MONTH) +1;
+        CLONE_CALENDAR.setTimeInMillis(BASE_CAL.getTimeInMillis());
+        CLONE_CALENDAR.add(Calendar.MONTH, howFarFromBase-1);
+        int mYear2 = CLONE_CALENDAR.get(Calendar.YEAR);
+        int mMonth2 = CLONE_CALENDAR.get(Calendar.MONTH) +1;
 
         final DatePickerView dpv = new DatePickerView(context, new DatePickerView.CalendarInfo(mYear2, mMonth2));
         dpv.setNotifyDataChange(this.notifyChangeData);
@@ -128,10 +129,10 @@ class DatePickerViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
     @Override
     public void onPageSelected(int position) {
         int howFarFromBase = position - BASE_POSITION;
-        Calendar cal = (Calendar) BASE_CAL.clone();
-        cal.add(Calendar.MONTH, howFarFromBase-1);
-        int month = cal.get(Calendar.MONTH)+1;
-        int year = cal.get(Calendar.YEAR);
+        CLONE_CALENDAR.setTimeInMillis(BASE_CAL.getTimeInMillis());
+        CLONE_CALENDAR.add(Calendar.MONTH, howFarFromBase-1);
+        int month = CLONE_CALENDAR.get(Calendar.MONTH)+1;
+        int year = CLONE_CALENDAR.get(Calendar.YEAR);
         notifyChangeData.notifyChangeDate(year,month,-1,position);
     }
 

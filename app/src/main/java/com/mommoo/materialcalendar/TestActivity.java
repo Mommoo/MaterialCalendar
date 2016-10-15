@@ -1,11 +1,8 @@
 package com.mommoo.materialcalendar;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 
 import com.mommoo.materialpicker.AlarmPicker;
@@ -25,10 +22,12 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePicker datePicker = new DatePicker(TestActivity.this,2016,0,21);
+                DatePicker datePicker = new DatePicker(TestActivity.this);
+                datePicker.setDate(2016,11,25);
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 float fromX = location[0], fromY = location[1];
@@ -70,9 +69,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 TimePicker timePicker = new TimePicker(TestActivity.this);
-                //timePicker.setMode(TimePicker.MINUTE_MODE);
-                //timePicker.setMaximumWidth();
-                //timePicker.setMinimumWidth();
+                timePicker.setTime(0,10,12);
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 ClipAnimation clipAnimation = new ClipAnimation(location[0],location[1]);

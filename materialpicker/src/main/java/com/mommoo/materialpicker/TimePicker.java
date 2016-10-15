@@ -96,9 +96,9 @@ public class TimePicker extends Picker {
         ClipAnimLayout layout = new ClipAnimLayout(context,new ClipAnimLayout.Builder());
         layout.addView(linearLayout);
         setDialogContentView(layout);
-        this.hour = calendar.get(Calendar.HOUR)==0?12:calendar.get(Calendar.HOUR);
+        this.hour = (calendar.get(Calendar.HOUR))==0?12:calendar.get(Calendar.HOUR);
         this.minute = calendar.get(Calendar.MINUTE);
-        inputDialogTitle(calendar.get(Calendar.AM_PM),hour,minute);
+        setTitle(calendar.get(Calendar.AM_PM),hour,minute);
 
         setOnPickBtnListener(new OnPickBtnListener() {
             @Override
@@ -143,7 +143,7 @@ public class TimePicker extends Picker {
                                 TimePicker.this.am_pm = am_pm;
                                 TimePicker.this.hour = hour;
                                 TimePicker.this.minute = minute;
-                                inputDialogTitle(am_pm,hour,minute);
+                                setTitle(am_pm,hour,minute);
                             }
                         });
                         layout.setLayoutParams(params);
@@ -169,7 +169,15 @@ public class TimePicker extends Picker {
         if(pickerView != null) pickerView.setThemeColor(color);
     }
 
-    public void inputDialogTitle(int am_pm, int hour, int minute){
+    public void setTime(int am_pm, int hour, int minute){
+        this.am_pm = am_pm;
+        this.hour = hour;
+        this.minute = minute;
+        if(pickerView != null) pickerView.setData(am_pm,hour,minute);
+        setTitle(am_pm,hour,minute);
+    }
+
+    public void setTitle(int am_pm, int hour, int minute){
         String time = hour+" : "+(minute<10?"0":"")+minute;
         setDialogStatusTitle(am_pmStrings[am_pm]);
         setDialogTitle(time);

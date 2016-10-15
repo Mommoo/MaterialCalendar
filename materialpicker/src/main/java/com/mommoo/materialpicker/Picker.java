@@ -96,6 +96,7 @@ abstract class Picker extends Dialog implements View.OnClickListener{
         this.setContentView(R.layout.picker_view);
         this.setCancelable(false);
 
+
         pickerDimension = PickerDimension.getInstance();
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -285,7 +286,13 @@ abstract class Picker extends Dialog implements View.OnClickListener{
     }
 
     protected void doVibration(){
-        if (isVibrate) vibrator.vibrate(30);
+        if (isVibrate) {
+            try{
+                vibrator.vibrate(30);
+            }catch(SecurityException se) {
+                Log.i("error", "please check vibrate permission");
+            }
+        }
     }
 
     public void changeAcceptButtonText(String text){
