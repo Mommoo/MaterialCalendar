@@ -11,3 +11,4 @@ v 0.1.7 : fix Alarm-picker bug : when we uesd setThemeColor() mathod, not change
 v 0.1.8 : add Alarm-picker constructor : add parameter (java.util.Calendar) <br />
 v 0.2.0 : re-design package for encapsulation and fix Alarm-Picker textSize <br />
 v 0.2.1 : public Month-picker <br />
+v 0.2.3 : add function : can change date or time value <br />
