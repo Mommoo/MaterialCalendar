@@ -22,6 +22,11 @@ class ScrollTimePickerView extends ScrollPickerView implements TimePickerListVie
         this.pickChanged = pickChanged;
     }
 
+    public ScrollTimePickerView(Context context,Calendar cal){
+        super(context,new Builder());
+        initialize(context,cal);
+    }
+
     public ScrollTimePickerView(Context context, ClipAnimLayout.Builder builder) {
         super(context, builder);
         initialize(context,null);

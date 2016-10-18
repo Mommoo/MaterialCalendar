@@ -39,11 +39,12 @@ public class TimePicker extends Picker {
         initialize(context,calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),calendar.get(Calendar.AM_PM));
     }
 
-    public TimePicker(Context context,int hour, int minute, int am_pm){
+    public TimePicker(Context context,int am_pm, int hour, int minute){
         super(context);
+        if(am_pm>1) am_pm = 1;
+        calendar.set(Calendar.AM_PM,am_pm);
         calendar.set(Calendar.HOUR,hour);
         calendar.set(Calendar.MINUTE,minute);
-        calendar.set(Calendar.AM_PM,am_pm);
         initialize(context,calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),calendar.get(Calendar.AM_PM));
     }
 
@@ -58,6 +59,7 @@ public class TimePicker extends Picker {
     private void initialize(Context context,int hour,int minute,int am_pm){
         int textSize = DIPManager.px2dip(9*getDialogWidth()/40,getContext());
         setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,textSize);
+        /** if dialog width changed, execute this listener */
         setOnDialogWidthChanged(new OnDialogWidthChanged() {
             @Override
             public void changed(int width) {
@@ -66,11 +68,10 @@ public class TimePicker extends Picker {
             }
         });
         pickBtn.setImageResource(R.mipmap.swap);
-        this.am_pm = am_pm;
-        this.hour = hour;
-        this.minute = minute;
+        setData(calendar);
         pickerView = new TimePickerView(context, HOUR_MODE, calendar);
-        TimePickerView.NotifyChanged notifyChanged = new TimePickerView.NotifyChanged() {
+
+        pickerView.setNotifyChanged(new TimePickerView.NotifyChanged() {
             @Override
             public void notify(int hour, int minute, int am_pm) {
                 TimePicker.this.hour = hour;
@@ -87,80 +88,109 @@ public class TimePicker extends Picker {
             public void vibrate() {
                 doVibration();
             }
-        };
-        pickerView.setNotifyChanged(notifyChanged);
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(new View(context),new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DIPManager.dip2px(16,context)));
-        linearLayout.addView(pickerView);
-        ClipAnimLayout layout = new ClipAnimLayout(context,new ClipAnimLayout.Builder());
-        layout.addView(linearLayout);
-        setDialogContentView(layout);
-        this.hour = (calendar.get(Calendar.HOUR))==0?12:calendar.get(Calendar.HOUR);
-        this.minute = calendar.get(Calendar.MINUTE);
+        });
+        View view = makeContentView(context);
+        setDialogContentView(view);
+        saveContentView();
+
+        ClipAnimLayout.Builder builder = makeBuilder();
+        ScrollTimePickerView scrollTimePickerView = makeScrollTimePickerView(context);
+        scrollTimePickerView.setBuilder(builder);
+        saveContentView(1,scrollTimePickerView);
+        ((ClipAnimLayout)view).setBuilder(builder);
+
         setTitle(calendar.get(Calendar.AM_PM),hour,minute);
 
         setOnPickBtnListener(new OnPickBtnListener() {
+            private int swapResId = R.mipmap.swap;
+            private int timeResId = R.mipmap.time;
+
             @Override
             public void onClick(View view, final FrameLayout decoView) {
-                int resId = 0;
-                if (isTime) resId = R.mipmap.swap;
-                else resId = R.mipmap.time;
-                ((ImageView) view).setImageResource(resId);
-                boolean isSavedView = getSavedContentView(1) != null;
+
+                ((ImageView) view).setImageResource(isTime?swapResId:timeResId);
                 ClipAnimLayout layout = null;
 
-                if (isTime) {
+                if (!isTime) {
                     layout = (ClipAnimLayout) getSavedContentView(0);
                     pickerView.setData(TimePicker.this.am_pm,TimePicker.this.hour,TimePicker.this.minute);
                 } else {
-                    if (!isSavedView) {
-                        int radius = pickerDimension.getPickBtnAnimCircleRadius();
-                        ClipAnimLayout.Builder builder = new ClipAnimLayout.Builder();
-                        builder.setAnimDuration(400).setStartLocation((pickerDimension.getContentWidth()) / 2
-                                , pickerDimension.getContentHeight() / 2)
-                                .setStartRadius(radius).setTimeInterpolator(new AccelerateInterpolator())
-                                .setAnimListener(new ClipAnimLayout.Builder.AnimListener() {
-                                    @Override
-                                    public void onAnimEnd(View view) {
-                                        decoView.removeView(view);
-                                        saveContentView();
-                                        setDialogContentView(view);
-                                        pickBtnClick = false;
-                                    }
-                                });
-                        int contentHeight = pickerDimension.getContentHeight();
-                        int contentWidth = pickerDimension.getContentWidth();
-                        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(contentWidth, contentHeight);
-                        Calendar tempCalendar = Calendar.getInstance();
-                        tempCalendar.set(Calendar.AM_PM,TimePicker.this.am_pm);
-                        tempCalendar.set(Calendar.HOUR,TimePicker.this.hour);
-                        tempCalendar.set(Calendar.MINUTE,TimePicker.this.minute);
-                        layout = new ScrollTimePickerView(decoView.getContext(),tempCalendar ,builder);
-                        ((ScrollTimePickerView)layout).setPickChanged(new ScrollTimePickerView.PickChanged() {
-                            @Override
-                            public void dataSet(int am_pm, int hour, int minute) {
-                                TimePicker.this.am_pm = am_pm;
-                                TimePicker.this.hour = hour;
-                                TimePicker.this.minute = minute;
-                                setTitle(am_pm,hour,minute);
-                            }
-                        });
-                        layout.setLayoutParams(params);
-                        layout.setX(pickerDimension.getContentX());
-                        layout.setY(pickerDimension.getContentY());
-                        ((ClipAnimLayout) getContentView()).setBuilder(builder);
-                    } else {
-                        layout = (ClipAnimLayout) getSavedContentView(1);
-                        ((ScrollTimePickerView)layout).setData(TimePicker.this.am_pm,TimePicker.this.hour,TimePicker.this.minute);
-                    }
+                    layout = (ClipAnimLayout) getSavedContentView(1);
+                    ((ScrollTimePickerView)layout).setData(TimePicker.this.am_pm,TimePicker.this.hour,TimePicker.this.minute);
                 }
+                layout.setX(pickerDimension.getContentX());
+                layout.setY(pickerDimension.getContentY());
                 decoView.addView(layout);
+
                 layout.startAnim();
 
                 isTime = !isTime;
             }
         });
+    }
+
+    private void setData(Calendar calendar){
+        this.am_pm = calendar.get(Calendar.AM_PM);
+        this.hour = (calendar.get(Calendar.HOUR))==0?12:calendar.get(Calendar.HOUR);
+        this.minute = calendar.get(Calendar.MINUTE);
+    }
+
+    private View makeContentView(Context context){
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        /** add paddingView */
+        linearLayout.addView(new View(context),new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DIPManager.dip2px(16,context)));
+        linearLayout.addView(pickerView);
+        ClipAnimLayout layout = new ClipAnimLayout(context,new ClipAnimLayout.Builder());
+        layout.addView(linearLayout);
+        return layout;
+    }
+
+    private ClipAnimLayout.Builder makeBuilder(){
+        int radius = pickerDimension.getPickBtnAnimCircleRadius();
+        ClipAnimLayout.Builder builder = new ClipAnimLayout.Builder();
+        builder.setAnimDuration(400).setStartLocation((pickerDimension.getContentWidth()) / 2
+                , pickerDimension.getContentHeight() / 2)
+                .setStartRadius(radius).setTimeInterpolator(new AccelerateInterpolator())
+                .setAnimListener(new ClipAnimLayout.Builder.AnimListener() {
+                    @Override
+                    public void onAnimEnd(View view) {
+                        getDecoView().removeView(view);
+                        saveContentView();
+                        setDialogContentView(view);
+                        pickBtnClick = false;
+                    }
+                });
+        return builder;
+    }
+
+    private ScrollTimePickerView makeScrollTimePickerView(Context context){
+        int contentHeight = pickerDimension.getContentHeight();
+        int contentWidth = pickerDimension.getContentWidth();
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(contentWidth, contentHeight);
+        Calendar tempCalendar = Calendar.getInstance();
+        tempCalendar.set(Calendar.AM_PM,TimePicker.this.am_pm);
+        tempCalendar.set(Calendar.HOUR,TimePicker.this.hour);
+        tempCalendar.set(Calendar.MINUTE,TimePicker.this.minute);
+        ScrollTimePickerView layout = new ScrollTimePickerView(context,tempCalendar);
+        layout.setPickChanged(new ScrollTimePickerView.PickChanged() {
+            @Override
+            public void dataSet(int am_pm, int hour, int minute) {
+                TimePicker.this.am_pm = am_pm;
+                TimePicker.this.hour = hour;
+                TimePicker.this.minute = minute;
+                setTitle(am_pm,hour,minute);
+            }
+        });
+        layout.setLayoutParams(params);
+        layout.setX(pickerDimension.getContentX());
+        layout.setY(pickerDimension.getContentY());
+        return layout;
+    }
+
+    public void setScrollMode(boolean scrollMode){
+        super.setScrollMode(scrollMode);
+        isTime = !scrollMode;
     }
 
     @Override
@@ -170,6 +200,7 @@ public class TimePicker extends Picker {
     }
 
     public void setTime(int am_pm, int hour, int minute){
+        if(am_pm>1) am_pm = 1;
         this.am_pm = am_pm;
         this.hour = hour;
         this.minute = minute;

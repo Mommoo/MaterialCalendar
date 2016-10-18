@@ -48,20 +48,19 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
     }
 
     private void initialize(Context context, final int year, int month, int date) {
-        int testSize = DIPManager.px2dip(getDialogWidth()/7,context);
-        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,testSize);
+        int textSize = DIPManager.px2dip(getDialogWidth()/7,context);
+        setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,textSize);
+        /** if dialog width changed, execute this listener */
         setOnDialogWidthChanged(new OnDialogWidthChanged() {
             @Override
             public void changed(int width) {
-                int testSize = DIPManager.px2dip(width/7,getContext());
-                setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,testSize);
+                int textSize = DIPManager.px2dip(width/7,getContext());
+                setDialogTitleSize(TypedValue.COMPLEX_UNIT_SP,textSize);
             }
         });
         pickBtn.setImageResource(R.mipmap.swap);
         cal.set(year,month,date);
-        this.year = cal.get(Calendar.YEAR);
-        this.month = cal.get(Calendar.MONTH) +1;
-        this.date = cal.get(Calendar.DATE);
+        setData(cal);
         setTitle(this.year,this.month,this.date);
 
         View view = LayoutInflater.from(context).inflate(R.layout.date_picker_view, null);
@@ -71,7 +70,6 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
         monthTextView = (TextView) view.findViewById(R.id.monthText);
 
         adapter = new DatePickerViewPagerAdapter(context);
-        adapter.setThemeColor(getThemeColor());
 
         adapter.setNotifyDataChange(this);
         viewPager.setAdapter(adapter);
@@ -79,114 +77,141 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
 
         position = adapter.getPosition(this.year, this.month, this.date);
         viewPager.setCurrentItem(position);
-        viewPager.setOffscreenPageLimit(5);
+        viewPager.setOffscreenPageLimit(3);
 
         setDialogContentView(view);
+        saveContentView();
 
-        findViewById(R.id.leftBtn).setOnClickListener(new View.OnClickListener() {
+        setMoveBtnListener();
+
+
+        float textFloatSize = pickerDimension.getTextDpSize(context);
+        yearTextView.setTextSize(textFloatSize * 1.2f);
+        monthTextView.setTextSize(textFloatSize * 1.2f);
+
+        makeDayTextView(view);
+
+        ClipAnimLayout.Builder builder = makeBuilder();
+        ScrollDatePickerView scrollDatePickerView = makeScrollDatePickerView(context);
+        scrollDatePickerView.setBuilder(builder);
+        saveContentView(1,scrollDatePickerView);
+        ((ClipAnimLayout)view).setBuilder(builder);
+
+
+        setOnPickBtnListener(new OnPickBtnListener() {
+            private int swapResId = R.mipmap.swap;
+            private int calendarResId = R.mipmap.calendar;
             @Override
-            public void onClick(View view) {
-                viewPager.setCurrentItem(--position, true);
+            public void onClick(View view, final FrameLayout decoView) {
+
+                ((ImageView) view).setImageResource(isDate?swapResId:calendarResId);
+                ClipAnimLayout layout = null;
+
+                if (!isDate) {
+                    layout = (ClipAnimLayout) getSavedContentView(0);
+                    DatePickerViewPagerAdapter viewPagerAdapter =((DatePickerViewPagerAdapter)viewPager.getAdapter());
+                    int position = viewPagerAdapter.getPosition(DatePicker.this.year,DatePicker.this.month,DatePicker.this.date);
+                    viewPager.setCurrentItem(position,true);
+                    viewPagerAdapter.setData(DatePicker.this.year,DatePicker.this.month,DatePicker.this.date);
+                    viewPagerAdapter.notifyDataSetChanged();
+                } else {
+                    layout = (ClipAnimLayout) getSavedContentView(1);
+                    ((ScrollDatePickerView)layout).setData(DatePicker.this.year,DatePicker.this.month,DatePicker.this.date);
+                }
+                layout.setX(pickerDimension.getContentX());
+                layout.setY(pickerDimension.getContentY());
+                decoView.addView(layout);
+
+                layout.startAnim();
+                isDate = !isDate;
             }
         });
+    }
 
-        findViewById(R.id.rightBtn).setOnClickListener(new View.OnClickListener() {
+    private void setMoveBtnListener(){
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewPager.setCurrentItem(++position, true);
+                viewPager.setCurrentItem(position+((int)view.getTag()), true);
             }
-        });
+        };
+        View leftBtn = findViewById(R.id.leftBtn); leftBtn.setTag(-1);
+        View rightBtn = findViewById(R.id.rightBtn); rightBtn.setTag(1);
+        leftBtn.setOnClickListener(onClickListener);
+        rightBtn.setOnClickListener(onClickListener);
+    }
 
-        float textSize = pickerDimension.getTextDpSize(context);
-        yearTextView.setTextSize(textSize * 1.2f);
-        monthTextView.setTextSize(textSize * 1.2f);
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout);
+    private void makeDayTextView(View targetView){
+        float textFloatSize = pickerDimension.getTextDpSize(targetView.getContext());
+        LinearLayout linearLayout = (LinearLayout) targetView.findViewById(R.id.linearLayout);
         for (int i = 0; i < 7; i++) {
-            dayTextViews[i] = new TextView(context);
+            dayTextViews[i] = new TextView(targetView.getContext());
             dayTextViews[i].setText(days[i]);
-            dayTextViews[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+            dayTextViews[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, textFloatSize);
             dayTextViews[i].setGravity(Gravity.CENTER);
             if (i == 0) dayTextViews[i].setTextColor(Color.RED);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
             params.weight = 1;
             linearLayout.addView(dayTextViews[i], params);
         }
+    }
 
-        setOnPickBtnListener(new OnPickBtnListener() {
+    private ClipAnimLayout.Builder makeBuilder(){
+        ClipAnimLayout.Builder builder = new ClipAnimLayout.Builder();
+        int radius = pickerDimension.getPickBtnAnimCircleRadius();
+        builder.setAnimDuration(400).setStartLocation((pickerDimension.getContentWidth()) / 2
+                , pickerDimension.getContentHeight() / 2)
+                .setStartRadius(radius).setTimeInterpolator(new AccelerateInterpolator())
+                .setAnimListener(new ClipAnimLayout.Builder.AnimListener() {
+                    @Override
+                    public void onAnimEnd(View view) {
+                        getDecoView().removeView(view);
+                        saveContentView();
+                        setDialogContentView(view);
+                        pickBtnClick = false;
+                    }
+                });
+        return builder;
+    }
+
+    private ScrollDatePickerView makeScrollDatePickerView(Context context){
+        int contentHeight = pickerDimension.getContentHeight();
+        int contentWidth = pickerDimension.getContentWidth();
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(contentWidth, contentHeight);
+        Calendar tempCalendar = Calendar.getInstance();
+        tempCalendar.set(DatePicker.this.year,DatePicker.this.month - 1,DatePicker.this.date);
+        ScrollDatePickerView scrollDatePickerView = new ScrollDatePickerView(context,tempCalendar);
+        scrollDatePickerView.setPickChanged(new ScrollDatePickerView.PickChanged() {
             @Override
-            public void onClick(View view, final FrameLayout decoView) {
-                int resId = 0;
-                if (isDate) resId = R.mipmap.swap;
-                else resId = R.mipmap.calendar;
-                ((ImageView) view).setImageResource(resId);
-                boolean isSavedView = getSavedContentView(1) != null;
-                ClipAnimLayout layout = null;
-
-                if (isDate) {
-                    layout = (ClipAnimLayout) getSavedContentView(0);
-                    DatePickerViewPagerAdapter viewPagerAdapter =((DatePickerViewPagerAdapter)viewPager.getAdapter());
-                    int position = viewPagerAdapter.getPosition(DatePicker.this.year,DatePicker.this.month,DatePicker.this.date);
-                    viewPager.setCurrentItem(position,true);
-
-                    setDatePickViewClickedState(false);
-                    boolean success = setDatePickViewClickedState(true);
-                    if(!success){
-                        viewPagerAdapter.setData(DatePicker.this.year,DatePicker.this.month,DatePicker.this.date);
-                        viewPagerAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    if (!isSavedView) {
-                        int radius = pickerDimension.getPickBtnAnimCircleRadius();
-                        ClipAnimLayout.Builder builder = new ClipAnimLayout.Builder();
-                        builder.setAnimDuration(400).setStartLocation((pickerDimension.getContentWidth()) / 2
-                                , pickerDimension.getContentHeight() / 2)
-                                .setStartRadius(radius).setTimeInterpolator(new AccelerateInterpolator())
-                                .setAnimListener(new ClipAnimLayout.Builder.AnimListener() {
-                                    @Override
-                                    public void onAnimEnd(View view) {
-                                        decoView.removeView(view);
-                                        saveContentView();
-                                        setDialogContentView(view);
-                                        pickBtnClick = false;
-                                    }
-                                });
-                        int contentHeight = pickerDimension.getContentHeight();
-                        int contentWidth = pickerDimension.getContentWidth();
-                        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(contentWidth, contentHeight);
-                        Calendar tempCalendar = Calendar.getInstance();
-                        tempCalendar.set(DatePicker.this.year,DatePicker.this.month - 1,DatePicker.this.date);
-                        layout = new ScrollDatePickerView(decoView.getContext(),tempCalendar ,builder);
-                        ((ScrollDatePickerView)layout).setPickChanged(new ScrollDatePickerView.PickChanged() {
-                            @Override
-                            public void dataSet(int year, int month, int date) {
-
-                                DatePicker.this.year = year;
-                                DatePicker.this.month = month;
-                                DatePicker.this.date = date;
-                                setTitle(year,month,date);
-                            }
-                        });
-                        layout.setLayoutParams(params);
-                        layout.setX(pickerDimension.getContentX());
-                        layout.setY(pickerDimension.getContentY());
-                        ((ClipAnimLayout) getContentView()).setBuilder(builder);
-                    } else {
-                        layout = (ClipAnimLayout) getSavedContentView(1);
-                        ((ScrollDatePickerView)layout).setData(DatePicker.this.year,DatePicker.this.month,DatePicker.this.date);
-                    }
-                }
-                decoView.addView(layout);
-                layout.startAnim();
-
-                isDate = !isDate;
+            public void dataSet(int year, int month, int date) {
+                DatePicker.this.year = year;
+                DatePicker.this.month = month;
+                DatePicker.this.date = date;
+                setTitle(year,month,date);
             }
         });
+        scrollDatePickerView.setLayoutParams(params);
+        scrollDatePickerView.setX(pickerDimension.getContentX());
+        scrollDatePickerView.setY(pickerDimension.getContentY());
+        return scrollDatePickerView;
+    }
+
+    private void setData(Calendar cal){
+        this.year = cal.get(Calendar.YEAR);
+        this.month = cal.get(Calendar.MONTH)+1;
+        this.date = cal.get(Calendar.DATE);
     }
 
     @Override
     public void setThemeColor(int color) {
         super.setThemeColor(color);
-        if(adapter!=null)adapter.setThemeColor(color);
+        DatePickerView.setThemeColor(color);
+    }
+
+    @Override
+    public void setScrollMode(boolean scrollMode){
+        super.setScrollMode(scrollMode);
+        isDate = !scrollMode;
     }
 
     public void setDate(int year, int month, int date){
@@ -194,6 +219,8 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
         this.month = month+1;
         this.date = date;
         position = adapter.getPosition(this.year, this.month, this.date);
+        adapter.setData(this.year,this.month,this.date);
+        adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(position);
         setTitle(this.year,this.month,this.date);
     }
@@ -262,34 +289,13 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
             this.month = month;
             this.date = date;
             setTitle(year,month,date);
-            setDatePickViewClickedState(false);
-            setDatePickViewClickedState(true);
-        }else{
+        }
+
+        if(date == DatePickerViewPagerAdapter.ONLY_MOVE_SCROLL){
             yearTextView.setText(yearString);
             monthTextView.setText(monthString);
         }
         if (position > 0) this.position = position;
         else doVibration();
-    }
-
-    private boolean setDatePickViewClickedState(boolean clicked){
-        boolean success = false;
-        for(int i=0,size = viewPager.getChildCount();i<size;i++){
-            DatePickerView datePickerView = ((DatePickerView)viewPager.getChildAt(i));
-            if(clicked){
-                if(datePickerView.getCalendarInfo().getYear() == DatePicker.this.year && datePickerView.getCalendarInfo().getMonth() == DatePicker.this.month){
-                    datePickerView.setClickedState(DatePicker.this.date);
-                    success = true;
-                    break;
-                }
-            }else{
-                if(datePickerView.isClicked()){
-                    datePickerView.setNotClickedState();
-                    success = true;
-                    break;
-                }
-            }
-        }
-        return success;
     }
 }

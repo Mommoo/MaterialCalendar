@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -22,31 +23,40 @@ import java.util.Calendar;
 class DatePickerView extends View{
 
     private int startWeek,targetPosition=-1,todayDate=-1;
-    private boolean reDraw=true,isAnim,isClicked;
-    private CalendarInfo calendarInfo;
+    private boolean reDraw=true,isAnim,cancel;
     private CalendarCalculator calendarCalculator;
-    private DecoPaint decoPaint = new DecoPaint(getContext());
-    private int PADDING;
+
+    private int PADDING,year,month,date;
     private float area,radius,maxRadius;
     private float animX, animY,animCenterX,animCenterY;
     private String animDate;
     private Bitmap store;
     private Canvas storeCanvas;
-    private TimeInterpolator overInter = new OvershootInterpolator();
+
     private DatePickerViewPagerAdapter.NotifyChangeData notifyChangeData;
     private NotifyClickedData notifyClickedData;
-    
+
+    private static final TimeInterpolator OVER_INTERPOLATOR;
+    private static final Calendar CALCULATE_CALENDAR;
+    private static final DecoPaint DECO_PAINT;
+    static{
+        OVER_INTERPOLATOR = new OvershootInterpolator();
+        CALCULATE_CALENDAR = Calendar.getInstance();
+        DECO_PAINT = new DecoPaint();
+    }
+
     public interface NotifyClickedData{
-        public void notify(int year, int month, int date);
+        public void notify(DatePickerView dpv);
     }
 
     public void setNotifyClickedData(NotifyClickedData notifyClickedData){
         this.notifyClickedData = notifyClickedData;
     }
 
-    public DatePickerView(Context context, CalendarInfo calendarInfo) {
+    public DatePickerView(Context context, int year, int month) {
         super(context);
-        this.calendarInfo = calendarInfo;
+        this.year = year;
+        this.month = month;
         initialize(context);
     }
 
@@ -66,75 +76,128 @@ class DatePickerView extends View{
         initialize(context);
     }
 
-    private void initialize(Context context){
-        PickerDimension calendarDimension = PickerDimension.getInstance();
-        PADDING = calendarDimension.getPadding(context);
-        area = calendarDimension.getElementAreaSize(context);
-        maxRadius = 7*area/10;
-        store = Bitmap.createBitmap(calendarDimension.getContentWidth()
-                ,calendarDimension.getContentHeight(), Bitmap.Config.ARGB_8888);
-        storeCanvas = new Canvas(store);
-        decoPaint.setTextSize(calendarDimension.getTextPxSize(context));
-        calendarCalculator = new CalendarCalculator(calendarInfo.year,calendarInfo.month);
+    private void initialize(final Context context){
+        final PickerDimension calendarDimension = PickerDimension.getInstance();
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                if(DECO_PAINT.themeColor == -1){
+                    int standardColor = ContextCompat.getColor(context, R.color.colorAccent);
+                    setThemeColor(standardColor);
+                }
+
+                PADDING = calendarDimension.getPadding(context);
+                area = calendarDimension.getElementAreaSize(context);
+                maxRadius = 7*area/10;
+
+                store = Bitmap.createBitmap(calendarDimension.getContentWidth()
+                        ,calendarDimension.getContentHeight(), Bitmap.Config.ARGB_8888);
+                storeCanvas = new Canvas(store);
+            }
+        };
+        thread.start();
+
+        DECO_PAINT.setTextSize(calendarDimension.getTextPxSize(context));
+        calendarCalculator = new CalendarCalculator(year,month);
         startWeek = calendarCalculator.getStartWeekCount();
 
-        Calendar cal = Calendar.getInstance();
-        if(cal.get(Calendar.YEAR) == calendarInfo.year && cal.get(Calendar.MONTH)+1 == calendarInfo.month) todayDate = cal.get(Calendar.DATE);
+        if(CALCULATE_CALENDAR.get(Calendar.YEAR) == year && CALCULATE_CALENDAR.get(Calendar.MONTH)+1 == month) todayDate = CALCULATE_CALENDAR.get(Calendar.DATE);
+        try{
+            thread.join();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public CalendarInfo getCalendarInfo(){
-        return calendarInfo;
+    public int getYear(){
+        return year;
     }
 
-    public void setThemeColor(int color){
-        decoPaint.setThemeColor(color);
+    public int getMonth(){
+        return month;
+    }
+
+    public void setDate(int date){
+        this.date = date;
+    }
+
+    public int getDate(){
+        return date;
+    }
+
+    public static void setThemeColor(int color){
+        DECO_PAINT.setThemeColor(color);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(reDraw){
-            for(int i=0;i<6;i++){
-                for(int j=0; j<7; j++) {
-                    int position = (7 * i) + j;
-                    int[] pointer = new int[]{i,j};
-                    if (position >= startWeek && position < calendarCalculator.getTotalMonthDate() + startWeek){
-                        if(targetPosition != position) drawWeekDayText(storeCanvas, pointer);
-                        else setInfoForAnim(i,j);
-                    }
+
+        if(reDraw) drawBackground();
+        else {
+            canvas.drawBitmap(store,0,0,null);
+            if(isAnim){
+                canvas.drawCircle(animCenterX,animCenterY,radius,DECO_PAINT.setEraseColor());
+                canvas.drawCircle(animCenterX,animCenterY,radius,DECO_PAINT.setCircleColor());
+                canvas.drawText(animDate,animX,animY,DECO_PAINT.setInCircleTextColor());
+            }
+        }
+    }
+    /** draw Calendar in backgroundThread  */
+    private void drawBackground(){
+        new AsyncTask<Void,Void,Void>(){
+
+            private void drawWeekDayText(Canvas canvas,int[] pointer){
+                int position = (7*pointer[0]) + pointer[1];
+                int date = position - startWeek +1;
+                String dateString = Integer.toString(date);
+                float x = (area *pointer[1])+(PADDING * (pointer[1]+1)) +((area - DECO_PAINT.getStringWidth(dateString))/2);
+                float y = (area *pointer[0])+(PADDING * (pointer[0]+1))+((area - DECO_PAINT.getStringHeight())/2);// + decoPaint.getTextSize();
+                if(todayDate>0){
+                    if(date == todayDate) canvas.drawText(date+"",x,y,DECO_PAINT.setTodayColor());
+                    else canvas.drawText(dateString,x,y,position % 7 ==0?DECO_PAINT.setHolidayColor():DECO_PAINT.setWeekDayColor());
+                }else{
+                    canvas.drawText(dateString,x,y,position % 7 ==0?DECO_PAINT.setHolidayColor():DECO_PAINT.setWeekDayColor());
                 }
             }
-            reDraw = false;
-        }
-        canvas.drawBitmap(store,0,0,null);
-        if(isAnim){
-            canvas.drawCircle(animCenterX,animCenterY,radius,decoPaint.setCircleColor());
-            canvas.drawText(animDate,animX,animY,decoPaint.setInCircleTextColor());
-        }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try{
+                    for(int i=0;i<6;i++){
+                        for(int j=0; j<7; j++) {
+                            int position = (7 * i) + j;
+                            int[] pointer = new int[]{i,j};
+                            if (position >= startWeek && position < calendarCalculator.getTotalMonthDate() + startWeek){
+                                drawWeekDayText(storeCanvas, pointer);
+                            }
+                        }
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+                reDraw = false;
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                invalidate();
+            }
+        }.execute();
     }
-
-    private void drawWeekDayText(Canvas canvas,int[] pointer){
-        int position = (7*pointer[0]) + pointer[1];
-        int date = position - startWeek +1;
-        String dateString = Integer.toString(date);
-        float x = (area *pointer[1])+(PADDING * (pointer[1]+1)) +((area - decoPaint.getStringWidth(dateString))/2);
-        float y = (area*pointer[0])+(PADDING * (pointer[0]+1))+((area - decoPaint.getStringHeight())/2);// + decoPaint.getTextSize();
-        if(todayDate>0){
-            if(date == todayDate) canvas.drawText(date+"",x,y,decoPaint.setTodayColor());
-            else canvas.drawText(dateString,x,y,position % 7 ==0?decoPaint.setHolidayColor():decoPaint.setWeekDayColor());
-        }else{
-            canvas.drawText(dateString,x,y,position % 7 ==0?decoPaint.setHolidayColor():decoPaint.setWeekDayColor());
-        }
-
-    }
-
-    private void setInfoForAnim(int i , int j){
-        int position = (7 * i) + j;
-        animDate = (Integer.toString(position - startWeek +1));
-        animX = (area *j)+(PADDING * (j+1)) +((area - decoPaint.getStringWidth(animDate))/2);
-        animY = (area*i)+(PADDING * (i+1))+((area - decoPaint.getStringHeight())/2);
-        animCenterX = (area *j)+(PADDING * (j+1)) + (area/2);
-        animCenterY = (area*i)+(PADDING * (i+1)) + (area/2);
+    /** set Information for notify coordinate to touch Animation */
+    private void setInfoForAnim(int position){
+        int row = position/7;
+        int col = position%7;
+        animDate = (Integer.toString(getDate()));
+        animX = (area *col)+(PADDING * (col+1)) +((area - DECO_PAINT.getStringWidth(animDate))/2);
+        animY = (area*row)+(PADDING * (row+1))+((area - DECO_PAINT.getStringHeight())/2);
+        animCenterX = (area *col)+(PADDING * (col+1)) + (area/2);
+        animCenterY = (area*row)+(PADDING * (row+1)) + (area/2);
     }
 
     @Override
@@ -146,11 +209,8 @@ class DatePickerView extends View{
         int colIndex = (int)(x/rectWidth);
         int rowIndex = (int)(y/rectHeight);
         int position = colIndex + (rowIndex*7);
-        /**
-         *
-         *  달력 클릭시, 숫자영역만 클릭이 먹히도록
-         *
-         */
+
+        /** if touch the view, only apply code in date area. */
         boolean isArea = (rectWidth * colIndex)+(PADDING/2)<=x
                 && x<=(rectWidth * (colIndex+1))+(PADDING/2)
                 && (rectHeight * rowIndex)<=y
@@ -159,28 +219,36 @@ class DatePickerView extends View{
                 && position < calendarCalculator.getTotalMonthDate() + startWeek;
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             if(isArea) {
+                cancel = false;
                 targetPosition = position;
             }
+        } else if(event.getAction() == MotionEvent.ACTION_MOVE){
+            if(targetPosition != position){
+                cancel = true;
+            }
         } else if(event.getAction() == MotionEvent.ACTION_UP){
-            if(isArea){
-                notifyChangeData.notifyChangeDate(calendarInfo.year,calendarInfo.month,position - startWeek +1,-1);
-                if(notifyClickedData != null) notifyClickedData.notify(calendarInfo.year,calendarInfo.month,targetPosition-startWeek+1);
-                if(targetPosition == position) startClickAnim();
+            if(isArea&&!cancel){
+                setDate(targetPosition - startWeek +1);
+                if(notifyChangeData  != null) notifyChangeData.notifyChangeDate(year,month,getDate(),-1);
+                if(notifyClickedData != null) notifyClickedData.notify(this);
+                setInfoForAnim(targetPosition);
+                startClickAnim();
             }
         }
         return true;
     }
-
+    /** touch animation */
     public void startClickAnim(){
-        reDraw = true;
         isAnim = true;
-        isClicked = true;
         ObjectAnimator animator = ObjectAnimator.ofFloat(this,"Radius",3*area/10,maxRadius);
-        animator.setInterpolator(overInter);
+        animator.setInterpolator(OVER_INTERPOLATOR);
         animator.setDuration(150);
         animator.start();
     }
-
+    /**
+     * needed to objectAnimation
+     * setRadius(),getRadius();
+     */
     private void setRadius(float radius){
         this.radius = radius;
         this.invalidate();
@@ -190,63 +258,21 @@ class DatePickerView extends View{
         return radius;
     }
 
-    public void setClickCircleColor(int color){
-        decoPaint.circleColor = color;
-    }
-
-    public int getClickCircleColor(){
-        return decoPaint.circleColor;
-    }
-
-    public void setClickInCircleTextColor(int color){
-        decoPaint.inCircleTextColor = color;
-    }
-    public int getClickInCircleTextColor(){
-        return decoPaint.inCircleTextColor;
-    }
-
     public void setNotifyDataChange(DatePickerViewPagerAdapter.NotifyChangeData notifyDataChange){
         this.notifyChangeData = notifyDataChange;
     }
-
-    public void setNotClickedState(){
-        isAnim = false;
-        reDraw = true;
-        isClicked = false;
-        targetPosition = -1;
-        if(notifyClickedData != null) notifyClickedData.notify(0,0,0);
+    /** force to drawCircle checking Date  */
+    public void setCheckedDate(boolean checkedDate){
+        isAnim = checkedDate;
+        if(checkedDate){
+            targetPosition = getDate()+startWeek-1;
+            if(notifyClickedData != null) notifyClickedData.notify(this);
+            setInfoForAnim(targetPosition);
+            radius = maxRadius;
+        }else{
+            targetPosition = -1;
+        }
         invalidate();
-    }
-
-    public void setClickedState(int targetDate){
-        isAnim = true;
-        reDraw = true;
-        isClicked = true;
-        if(notifyClickedData != null) notifyClickedData.notify(calendarInfo.year,calendarInfo.month,targetDate);
-        this.targetPosition = targetDate+startWeek-1;
-        radius = maxRadius;
-        invalidate();
-    }
-
-    public boolean isClicked(){
-        return isClicked;
-    }
-
-    public static class CalendarInfo{
-        private int year,month;
-        public CalendarInfo(int year,int month){
-            this.year = year;
-            this.month = month;
-        }
-
-        public int getYear(){
-            return year;
-        }
-
-        public int getMonth(){
-            return month;
-        }
-
     }
 
     public void destroy(){
@@ -254,24 +280,21 @@ class DatePickerView extends View{
         store.recycle();
         store = null;
     }
-
-    private class DecoPaint extends Paint {
+    /** customPaint this class is only one instance by static field */
+    private static class DecoPaint extends Paint {
 
         private float stringHeight;
         private int circleColor,todayColor;
         private int inCircleTextColor;
+        private int themeColor;
 
-        public DecoPaint(Context context){
+        public DecoPaint(){
             setAntiAlias(true);
-            int standardColor = ContextCompat.getColor(context, R.color.colorAccent);
-            float[] HSV = new float[3];
-            Color.colorToHSV(standardColor,HSV);
-            circleColor = Color.HSVToColor(100,HSV);
-            todayColor = com.mommoo.materialpicker.Color.darker(standardColor);
             inCircleTextColor = Color.WHITE;
         }
 
         private void setThemeColor(int color){
+            this.themeColor = color;
             float[] HSV = new float[3];
             Color.colorToHSV(color,HSV);
             circleColor = Color.HSVToColor(100,HSV);
@@ -306,6 +329,11 @@ class DatePickerView extends View{
 
         public Paint setTodayColor(){
             setColor(todayColor);
+            return this;
+        }
+
+        public Paint setEraseColor(){
+            setColor(Color.WHITE);
             return this;
         }
 

@@ -28,6 +28,7 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View view) {
                 DatePicker datePicker = new DatePicker(TestActivity.this);
                 datePicker.setDate(2016,11,25);
+                //datePicker.setScrollMode(true);
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 float fromX = location[0], fromY = location[1];
@@ -56,8 +57,8 @@ public class TestActivity extends AppCompatActivity {
                     @Override
                     public void onDate(boolean accept, int year, int month, int date) {
                         System.out.println("isAccept : "+accept+" , year : "+year +" , month : " +month+" , date : "+date);
-                        TimePicker timePicker =new TimePicker(TestActivity.this,10,55,1);
-                        timePicker.show();
+//                        TimePicker timePicker =new TimePicker(TestActivity.this,10,55,1);
+//                        timePicker.show();
                     }
                 });
 
@@ -65,11 +66,13 @@ public class TestActivity extends AppCompatActivity {
                 datePicker.show();
             }
         });
+        final TimePicker timePicker = new TimePicker(TestActivity.this);
         findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TimePicker timePicker = new TimePicker(TestActivity.this);
+                timePicker.setScrollMode(true);
                 timePicker.setTime(0,10,12);
+                timePicker.setMode(TimePicker.HOUR_MODE);
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 ClipAnimation clipAnimation = new ClipAnimation(location[0],location[1]);

@@ -24,9 +24,19 @@ class ScrollDatePickerView extends ScrollPickerView implements DatePickerListVie
         this.pickChanged = pickChanged;
     }
 
+    public ScrollDatePickerView(Context context){
+        super(context,new Builder());
+        initialize(context,null);
+    }
+
     public ScrollDatePickerView(Context context, ClipAnimLayout.Builder builder) {
         super(context, builder);
         initialize(context,null);
+    }
+
+    public ScrollDatePickerView(Context context,Calendar cal){
+        super(context,new Builder());
+        initialize(context,cal);
     }
 
     public ScrollDatePickerView(Context context, Calendar cal , ClipAnimLayout.Builder builder) {

@@ -86,6 +86,8 @@ class TimePickerView extends View {
 
     public void changeViewMode(int viewMode){
         this.viewMode = viewMode;
+        amPmCenterX = padding+am_pmRadius;
+        if(this.viewMode == MINUTE_MODE) amPmCenterX = -amPmCenterX;
         invalidate();
     }
 
@@ -469,8 +471,6 @@ class TimePickerView extends View {
         }
 
         public TextPaint setTextColor(){
-            //textPaint.setColor(Color.BLACK);
-            //textPaint.setAlpha(100);
             return textPaint;
         }
 

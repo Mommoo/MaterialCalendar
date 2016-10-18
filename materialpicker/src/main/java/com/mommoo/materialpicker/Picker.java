@@ -22,8 +22,6 @@ import java.util.ArrayList;
  * @author mommoo , blank
  *
  * basic view for DatePicker n TimePicker
- *
- *
  */
 abstract class Picker extends Dialog implements View.OnClickListener{
 
@@ -45,8 +43,8 @@ abstract class Picker extends Dialog implements View.OnClickListener{
     protected PickerDimension pickerDimension;
     private PickerAnimation animation;
     private ClipAnimLayout rootView;
-    protected Vibrator vibrator;
-    protected boolean isVibrate = true,once,pickBtnClick,prevent;
+    private Vibrator vibrator;
+    protected boolean isVibrate = true,once,pickBtnClick,prevent,scrollMode;
     protected ImageView pickBtn;
     private OnPickBtnListener onPickBtnListener;
     private OnDialogWidthChanged dialogWidthChanged;
@@ -128,6 +126,10 @@ abstract class Picker extends Dialog implements View.OnClickListener{
 
     }
 
+    protected FrameLayout getDecoView(){
+        return (FrameLayout)rootView.getParent();
+    }
+
     protected void startPickBtnAnim(final View view){
         final CircleImageView tempImageView = new CircleImageView(getContext());
         final int viewWidth = pickBtn.getWidth();
@@ -202,6 +204,15 @@ abstract class Picker extends Dialog implements View.OnClickListener{
         if((int)this.contentView.getTag()>=cacheViewArray.size()) cacheViewArray.add(this.contentView);
     }
 
+    protected void saveContentView(int position,View view){
+        if(position <= cacheViewArray.size()-1) cacheViewArray.set(position,view);
+        else if(position == cacheViewArray.size()){
+            cacheViewArray.add(view);
+        }else{
+            System.out.println("ArrayOutOfIndex Error");
+        }
+    }
+
     protected View getSavedContentView(int index){
         if(index>=cacheViewArray.size()) return null;
         return cacheViewArray.get(index);
@@ -247,6 +258,16 @@ abstract class Picker extends Dialog implements View.OnClickListener{
         primaryTitle.setBackgroundColor(color);
         primaryDarkTitle.setBackgroundColor(Color.darker(color));
         pickBtn.setBackgroundColor(color);
+    }
+
+    public void setScrollMode(boolean scrollMode){
+        this.scrollMode = scrollMode;
+        saveContentView();
+        setDialogContentView(getSavedContentView(scrollMode?1:0));
+    }
+
+    public boolean isScrollMode(){
+        return this.scrollMode;
     }
 
     public int getThemeColor(){
@@ -351,8 +372,8 @@ abstract class Picker extends Dialog implements View.OnClickListener{
         int duration = clipAnimation.getAnimDuration() ==0 ? clipAnimation.getDuration() : clipAnimation.getAnimDuration();
         rootView.getBuilder().setTimeInterpolator(clipAnimation.getTimeInterpolator())
                 .setAnimDuration(duration).setStartLocation(clipAnimation.getFromX(),clipAnimation.getFromY());
-        rootView.startAnim();
         rootView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        rootView.startAnim();
     }
 
     @Override
