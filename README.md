@@ -13,3 +13,4 @@ v 0.2.0 : re-design package for encapsulation and fix Alarm-Picker textSize <br 
 v 0.2.1 : public Month-picker <br />
 v 0.2.3 : add function : can change date or time value <br />
 v 0.2.6 : upgrade performance by using memory <br />
+v 0.3.0 : buf fix Date-Picker and Time-Picker
