@@ -168,7 +168,10 @@ class CalendarCalculator {
         if(minute<61){
             for(int i=0; i<60; i++){
                 if(minute == (standardMinute--)) return standardAngle;
-                if(standardMinute == 0) standardMinute = 60;
+                if(standardMinute == 0){
+                    if(minute == 0) return 90;
+                    standardMinute = 60;
+                }
                 standardAngle = (6*(i+1));
             }
         }

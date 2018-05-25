@@ -17,7 +17,7 @@ import java.util.Calendar;
 /**
  * Created by mommoo on 2016-08-01.
  */
-public class TimePicker extends Picker {
+public final class TimePicker extends Picker {
 
     private Calendar calendar = Calendar.getInstance();
     private int hour,minute,am_pm;
@@ -28,7 +28,7 @@ public class TimePicker extends Picker {
     private TimePickerView pickerView;
     private OnAcceptListener onAcceptListener;
     private OnTimeSet onTimeSet;
-    private boolean isTime;
+    private boolean isTime = true;
 
     public interface OnTimeSet{
         public void onTime(boolean isAccept, int hour, int minute, int am_pm);
@@ -108,7 +108,6 @@ public class TimePicker extends Picker {
             @Override
             public void onClick(View view, final FrameLayout decoView) {
 
-                ((ImageView) view).setImageResource(isTime?swapResId:timeResId);
                 ClipAnimLayout layout = null;
 
                 if (!isTime) {
@@ -125,6 +124,7 @@ public class TimePicker extends Picker {
                 layout.startAnim();
 
                 isTime = !isTime;
+                ((ImageView) view).setImageResource(isTime?swapResId:timeResId);
             }
         });
     }
@@ -191,6 +191,7 @@ public class TimePicker extends Picker {
     public void setScrollMode(boolean scrollMode){
         super.setScrollMode(scrollMode);
         isTime = !scrollMode;
+        pickBtn.setImageResource(scrollMode ? R.mipmap.time : R.mipmap.swap);
     }
 
     @Override

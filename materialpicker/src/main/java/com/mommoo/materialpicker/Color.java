@@ -39,6 +39,12 @@ class Color {
         return android.graphics.Color.argb(alpha, red, green, blue);
     }
 
+    public static int applyAlpha(int color,int alpha){
+        float[] HSV = new float[3];
+        android.graphics.Color.colorToHSV(color,HSV);
+        return android.graphics.Color.HSVToColor(alpha,HSV);
+    }
+
     private static int darkenColor(int color, double fraction) {
         return (int)Math.max(color - (color * fraction), 0);
     }

@@ -84,4 +84,9 @@ class PickerDimension {
     public int getPickBtnAnimCircleRadius(){
         return this.radius;
     }
+
+    @Override
+    public String toString() {
+        return getContentX()+" , " +getContentY();
+    }
 }

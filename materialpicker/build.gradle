@@ -4,7 +4,7 @@ publish {
     userOrg = 'mommoo'
     groupId = 'com.mommoo.android'
     artifactId = 'material-picker'
-    publishVersion = '0.2.6'
+    publishVersion = '0.2.9'
     desc = 'Date and Time picker material UX/UI for Android'
     website = 'https://github.com/Mommoo/MaterialCalendar'
     issueTracker = "${website}/issues"

@@ -28,7 +28,7 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View view) {
                 DatePicker datePicker = new DatePicker(TestActivity.this);
                 datePicker.setDate(2016,11,25);
-                //datePicker.setScrollMode(true);
+                datePicker.setScrollMode(true);
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 float fromX = location[0], fromY = location[1];
@@ -70,7 +70,7 @@ public class TestActivity extends AppCompatActivity {
         findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timePicker.setScrollMode(true);
+//                timePicker.setScrollMode(true);
                 timePicker.setTime(0,10,12);
                 timePicker.setMode(TimePicker.HOUR_MODE);
                 int[] location = new int[2];
@@ -91,6 +91,8 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlarmPicker alarmPicker = new AlarmPicker(TestActivity.this,-10,1,10,12);
+                alarmPicker.setTime(-20,1,10,12);
+                alarmPicker.setDate(2017,5,6);
                 alarmPicker.setThemeColor(Color.RED);
                 alarmPicker.setOnAlarmSet(new AlarmPicker.OnAlarmSet() {
                     @Override

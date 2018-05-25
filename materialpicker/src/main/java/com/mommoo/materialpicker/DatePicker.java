@@ -3,6 +3,7 @@ package com.mommoo.materialpicker;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
     private TextView[] dayTextViews = new TextView[7];
     private String[] fullDays = CalendarCalculator.getFullDays();
     private String[] days = CalendarCalculator.getDays();
-    private boolean isDate;
+    private boolean isDate = true;
     private ViewPager viewPager;
     private DatePickerViewPagerAdapter adapter;
 
@@ -59,6 +60,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
             }
         });
         pickBtn.setImageResource(R.mipmap.swap);
+
         cal.set(year,month,date);
         setData(cal);
         setTitle(this.year,this.month,this.date);
@@ -104,7 +106,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
             @Override
             public void onClick(View view, final FrameLayout decoView) {
 
-                ((ImageView) view).setImageResource(isDate?swapResId:calendarResId);
+
                 ClipAnimLayout layout = null;
 
                 if (!isDate) {
@@ -120,10 +122,15 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
                 }
                 layout.setX(pickerDimension.getContentX());
                 layout.setY(pickerDimension.getContentY());
-                decoView.addView(layout);
+
+                if ( layout.getParent() == null){
+                    decoView.addView(layout);
+                }
+
 
                 layout.startAnim();
                 isDate = !isDate;
+                ((ImageView) view).setImageResource(isDate?swapResId:calendarResId);
             }
         });
     }
@@ -212,6 +219,7 @@ public class DatePicker extends Picker implements DatePickerViewPagerAdapter.Not
     public void setScrollMode(boolean scrollMode){
         super.setScrollMode(scrollMode);
         isDate = !scrollMode;
+        pickBtn.setImageResource(isScrollMode()? R.mipmap.calendar : R.mipmap.swap);
     }
 
     public void setDate(int year, int month, int date){

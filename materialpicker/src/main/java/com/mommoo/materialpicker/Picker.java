@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -142,6 +143,7 @@ abstract class Picker extends Dialog implements View.OnClickListener{
             this.contentView.getLocationOnScreen(location);
             pickerDimension.setContentX(location[0]);
             pickerDimension.setContentY(location[1] -statusbarHeight);
+
         }
 
         final FrameLayout decoView = ((FrameLayout)rootView.getParent());

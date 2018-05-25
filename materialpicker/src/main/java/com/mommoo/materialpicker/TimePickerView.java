@@ -88,6 +88,7 @@ class TimePickerView extends View {
         this.viewMode = viewMode;
         amPmCenterX = padding+am_pmRadius;
         if(this.viewMode == MINUTE_MODE) amPmCenterX = -amPmCenterX;
+        setProperAngle();
         invalidate();
     }
 
@@ -98,8 +99,12 @@ class TimePickerView extends View {
         this.calendar.set(Calendar.AM_PM,am_pm);
         this.calendar.set(Calendar.HOUR,hour);
         this.calendar.set(Calendar.MINUTE,minute);
-        angle = viewMode==HOUR_MODE?CalendarCalculator.transHourToAngle(this.hour):CalendarCalculator.transMinuteToAngle(this.minute);
+        setProperAngle();
         invalidate();
+    }
+
+    private void setProperAngle(){
+        angle = viewMode==HOUR_MODE?CalendarCalculator.transHourToAngle(this.hour):CalendarCalculator.transMinuteToAngle(this.minute);
     }
 
     @Override
@@ -114,7 +119,7 @@ class TimePickerView extends View {
             if(this.viewMode == MINUTE_MODE) amPmCenterX = -amPmCenterX;
             this.hour = calendar.get(Calendar.HOUR);
             if(hour==0) this.hour = 12;
-            angle = viewMode==HOUR_MODE?CalendarCalculator.transHourToAngle(this.hour):CalendarCalculator.transMinuteToAngle(this.minute);
+            setProperAngle();
         }
         drawBackgroundCircle(canvas);
         if(viewMode== HOUR_MODE) {
@@ -359,14 +364,9 @@ class TimePickerView extends View {
                 decoPaint.textPaint.setAlpha(255);
                 decoPaint.AM_PM_Paint.setAlpha(255);
                 isAnim = false;
-                if(viewMode == HOUR_MODE){
-                    viewMode = MINUTE_MODE;
-                    angle = CalendarCalculator.transMinuteToAngle(minute);
-                }else{
-                    viewMode = HOUR_MODE;
-                    angle = CalendarCalculator.transHourToAngle(hour);
-                }
-                //invalidate();
+                if(viewMode == HOUR_MODE) viewMode = MINUTE_MODE;
+                else viewMode = HOUR_MODE;
+                setProperAngle();
             }
         });
         animatorSet.start();
@@ -401,15 +401,13 @@ class TimePickerView extends View {
     }
 
     class DecoPaint extends Paint {
-        private Context context;
         private TextPaint textPaint;
         private Paint AM_PM_Paint;
         private int pivotCircleColor,selectedCircleColor,lineColor,backgroundColor = Color.parseColor("#10000000");
         private PickerDimension pickerDimension;
         private float stringHeight;
 
-        public DecoPaint(Context context){
-            this.context = context;
+        private DecoPaint(Context context){
             pickerDimension = PickerDimension.getInstance();
             setAntiAlias(true);
             setBackgroundCircleColor();
@@ -440,45 +438,45 @@ class TimePickerView extends View {
             lineColor = pivotCircleColor;
         }
 
-        public DecoPaint setBackgroundCircleColor(){
+        private DecoPaint setBackgroundCircleColor(){
             setColor(backgroundColor);
             return this;
         }
 
-        public Paint setAM_PM_BackgroundCircleColor(){
+        private Paint setAM_PM_BackgroundCircleColor(){
             AM_PM_Paint.setColor(backgroundColor);
             return AM_PM_Paint;
         }
 
-        public Paint setAM_PM_SelectedCircleColor(){
+        private Paint setAM_PM_SelectedCircleColor(){
             AM_PM_Paint.setColor(selectedCircleColor);
             return AM_PM_Paint;
         }
 
-        public DecoPaint setPivotCircleColor(){
+        private DecoPaint setPivotCircleColor(){
             setColor(pivotCircleColor);
             return this;
         }
 
-        public DecoPaint setSelectedCircleColor(){
+        private DecoPaint setSelectedCircleColor(){
             setColor(selectedCircleColor);
             return this;
         }
 
-        public DecoPaint setLineColor(){
+        private DecoPaint setLineColor(){
             setColor(lineColor);
             return this;
         }
 
-        public TextPaint setTextColor(){
+        private TextPaint setTextColor(){
             return textPaint;
         }
 
-        public float getStringWidth(String str){
+        private float getStringWidth(String str){
             return measureText(str);
         }
 
-        public float getStringHeight(){
+        private float getStringHeight(){
             return stringHeight;
         }
     }
